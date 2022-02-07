@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Parser {
 
@@ -7,6 +8,7 @@ public class Parser {
 
     public void parse(ArrayList<Token> t) {
         tokens = (ArrayList<Token>) t.clone();
+        WinzigProcedure();
     }
 
     void WinzigProcedure() {
@@ -23,10 +25,10 @@ public class Parser {
     }
 
     void ConstsProcedure() {
-        if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "const") {
+        if (nextToken().value == "const") {
             readToken(TokenType.Predefined_Keyword, "const");
             ConstProcedure();
-            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ",") {
+            while (nextToken().value == ",") {
                 readToken(TokenType.Predefined_Operator, ",");
                 ConstProcedure();
             }
@@ -53,7 +55,7 @@ public class Parser {
     }
 
     void TypesProcedure() {
-        if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "type") {
+        if (nextToken().value == "type") {
             readToken(TokenType.Identifier, "type");
             while (nextToken().type == TokenType.Identifier) {
                 TypeProcedure();
@@ -71,7 +73,7 @@ public class Parser {
     void LitListProcedure() {
         readToken(TokenType.Predefined_Operator, "(");
         NameProcedure();
-        while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ",") {
+        while (nextToken().value == ",") {
             readToken(TokenType.Predefined_Operator, ",");
             NameProcedure();
         }
@@ -79,7 +81,7 @@ public class Parser {
     }
 
     void SubProgsProcedure() {
-        while (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "function") {
+        while (nextToken().value == "function") {
             FcnProcedure();
         }
     }
@@ -103,14 +105,14 @@ public class Parser {
 
     void ParamsProcedure() {
         DclnProcedure();
-        while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ";") {
+        while (nextToken().value == ";") {
             readToken(TokenType.Predefined_Operator, ";");
             DclnProcedure();
         }
     }
 
     void DclnsProcedure() {
-        if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "var") {
+        if (nextToken().value == "var") {
             readToken(TokenType.Predefined_Keyword, "var");
             while (nextToken().type == TokenType.Identifier) {
                 DclnProcedure();
@@ -121,7 +123,7 @@ public class Parser {
 
     void DclnProcedure() {
         NameProcedure();
-        while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ",") {
+        while (nextToken().value == ",") {
             readToken(TokenType.Predefined_Operator, ",");
             NameProcedure();
         }
@@ -132,7 +134,7 @@ public class Parser {
     void BodyProcedure() {
         readToken(TokenType.Predefined_Keyword, "begin");
         StatementProcedure();
-        while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ";") {
+        while (nextToken().value == ";") {
             readToken(TokenType.Predefined_Operator, ";");
             StatementProcedure();
         }
@@ -142,38 +144,38 @@ public class Parser {
     void StatementProcedure() {
         if (nextToken().type == TokenType.Identifier) {
             AssignmentProcedure();
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
+        } else if (nextToken().value == "output") {
             readToken(TokenType.Predefined_Keyword, "output");
             readToken(TokenType.Predefined_Operator, "(");
-            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ",") {
+            while (nextToken().value == ",") {
                 readToken(TokenType.Predefined_Operator, ",");
                 OutExpProcedure();
             }
             readToken(TokenType.Predefined_Operator, ")");
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "if") {
+        } else if (nextToken().value == "if") {
             readToken(TokenType.Predefined_Keyword, "if");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Keyword, "then");
             StatementProcedure();
-            while (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "else") {
+            while (nextToken().value == "else") {
                 readToken(TokenType.Predefined_Keyword, "else");
                 StatementProcedure();
             }
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "while") {
+        } else if (nextToken().value == "while") {
             readToken(TokenType.Predefined_Keyword, "while");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Keyword, "do");
             StatementProcedure();
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "repeat") {
+        } else if (nextToken().value == "repeat") {
             readToken(TokenType.Predefined_Keyword, "repeat");
             StatementProcedure();
-            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ";") {
+            while (nextToken().value == ";") {
                 readToken(TokenType.Predefined_Operator, ";");
                 StatementProcedure();
             }
             readToken(TokenType.Predefined_Keyword, "until");
             ExpressionProcedure();
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "for") {
+        } else if (nextToken().value == "for") {
             readToken(TokenType.Predefined_Keyword, "for");
             readToken(TokenType.Predefined_Operator, "(");
             ForStatProcedure();
@@ -183,36 +185,36 @@ public class Parser {
             ForStatProcedure();
             readToken(TokenType.Predefined_Operator, ")");
             StatementProcedure();
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "loop") {
+        } else if (nextToken().value == "loop") {
             readToken(TokenType.Predefined_Keyword, "loop");
             StatementProcedure();
-            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ";") {
+            while (nextToken().value == ";") {
                 readToken(TokenType.Predefined_Operator, ";");
                 StatementProcedure();
             }
             readToken(TokenType.Predefined_Keyword, "pool");
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "case") {
+        } else if (nextToken().value == "case") {
             readToken(TokenType.Predefined_Keyword, "case");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Keyword, "of");
             CaseclausesProcedure();
             OtherwiseClauseProcedure();
             readToken(TokenType.Predefined_Keyword, "end");
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "read") {
+        } else if (nextToken().value == "read") {
             readToken(TokenType.Predefined_Keyword, "read");
             readToken(TokenType.Predefined_Operator, "(");
             NameProcedure();
-            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ",") {
+            while (nextToken().value == ",") {
                 readToken(TokenType.Predefined_Operator, ",");
                 NameProcedure();
             }
             readToken(TokenType.Predefined_Operator, ")");
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "exit") {
+        } else if (nextToken().value == "exit") {
             readToken(TokenType.Predefined_Keyword, "exit");
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "return") {
+        } else if (nextToken().value == "return") {
             readToken(TokenType.Predefined_Keyword, "return");
             ExpressionProcedure();
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "begin") {
+        } else if (nextToken().value == "begin") {
             BodyProcedure();
         }
     }
@@ -221,8 +223,7 @@ public class Parser {
         if (nextToken().type == TokenType.String) {
             StringNodeProcedure();
         } else if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char || nextToken().type == TokenType.Integer ||
-                (nextToken().type == TokenType.Predefined_Operator && new ArrayList<String>(Arrays.asList("+", "-", "(")).contains(nextToken().value)) ||
-                (nextToken().type == TokenType.Predefined_Keyword && new ArrayList<String>(Arrays.asList("not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value))) {
+                new ArrayList<String>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value)) {
             ExpressionProcedure();
         } else {
             //TODO raise error
@@ -244,7 +245,7 @@ public class Parser {
 
     void CaseClauseProcedure() {
         CaseExpressionProcedure();
-        while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ",") {
+        while (nextToken().value == ",") {
             readToken(TokenType.Predefined_Operator, ",");
             CaseExpressionProcedure();
         }
@@ -254,18 +255,16 @@ public class Parser {
 
     void CaseExpressionProcedure() {
         ConstValueProcedure();
-        if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == "..") {
+        if (nextToken().value == "..") {
             readToken(TokenType.Predefined_Operator, "..");
             ConstValueProcedure();
         }
     }
 
     void OtherwiseClauseProcedure() {
-        if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "otherwise") {
+        if (nextToken().value == "otherwise") {
             readToken(TokenType.Predefined_Keyword, "otherwise");
             StatementProcedure();
-        } else if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ";") {
-            readToken(TokenType.Predefined_Operator, ";");
         } else {
             //TODO raise error
         }
@@ -273,10 +272,10 @@ public class Parser {
 
     void AssignmentProcedure() {
         NameProcedure();
-        if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ":=") {
+        if (nextToken().value == ":=") {
             readToken(TokenType.Predefined_Operator, ":=");
             ExpressionProcedure();
-        } else if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ":=:") {
+        } else if (nextToken().value == ":=:") {
             readToken(TokenType.Predefined_Operator, ":=:");
             NameProcedure();
         } else {
@@ -292,59 +291,166 @@ public class Parser {
 
     void ForExpProcedure() {
         if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char || nextToken().type == TokenType.Integer ||
-                (nextToken().type == TokenType.Predefined_Operator && new ArrayList<String>(Arrays.asList("+", "-", "(")).contains(nextToken().value)) ||
-                (nextToken().type == TokenType.Predefined_Keyword && new ArrayList<String>(Arrays.asList("not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value))) {
+                new ArrayList<String>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value)) {
             ExpressionProcedure();
         }
     }
 
     void ExpressionProcedure() {
         TermProcedure();
-        if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == "<=") {
+        if (nextToken().value == "<=") {
             readToken(TokenType.Predefined_Operator, "<=");
             TermProcedure();
-        }else if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == "<") {
+        } else if (nextToken().value == "<") {
             readToken(TokenType.Predefined_Operator, "<");
             TermProcedure();
-        }else if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ">=") {
+        } else if (nextToken().value == ">=") {
             readToken(TokenType.Predefined_Operator, ">=");
             TermProcedure();
-        }else if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ">") {
+        } else if (nextToken().value == ">") {
             readToken(TokenType.Predefined_Operator, ">");
             TermProcedure();
-        }else if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == "=") {
+        } else if (nextToken().value == "=") {
             readToken(TokenType.Predefined_Operator, "=");
             TermProcedure();
-        }else if (nextToken().type == TokenType.Predefined_Operator && nextToken().value == "<>") {
+        } else if (nextToken().value == "<>") {
             readToken(TokenType.Predefined_Operator, "<>");
             TermProcedure();
+        } else {
+            //TODO raise error
         }
     }
 
-    void TermProcedure(){
+    void TermProcedure() {
         FactorProcedure();
+        while (new ArrayList<String>(Arrays.asList("+", "-", "or")).contains(nextToken().value)) {
+            if (nextToken().value == "+") {
+                readToken(TokenType.Predefined_Operator, "+");
+                FactorProcedure();
+            } else if (nextToken().value == "-") {
+                readToken(TokenType.Predefined_Operator, "-");
+                FactorProcedure();
+            } else if (nextToken().value == "or") {
+                readToken(TokenType.Predefined_Keyword, "or");
+                FactorProcedure();
+            }
+        }
     }
 
+    void FactorProcedure() {
+        PrimaryProcedure();
+        while (new ArrayList<String>(Arrays.asList("*", "/", "and", "mod")).contains(nextToken().value)) {
+            if (nextToken().value == "*") {
+                readToken(TokenType.Predefined_Operator, "*");
+                PrimaryProcedure();
+            } else if (nextToken().value == "/") {
+                readToken(TokenType.Predefined_Operator, "/");
+                PrimaryProcedure();
+            } else if (nextToken().value == "and") {
+                readToken(TokenType.Predefined_Keyword, "and");
+                PrimaryProcedure();
+            } else if (nextToken().value == "mod") {
+                readToken(TokenType.Predefined_Keyword, "mod");
+                PrimaryProcedure();
+            }
+        }
+    }
+
+    void PrimaryProcedure() {
+        if (nextToken().value == "-") {
+            readToken(TokenType.Predefined_Operator, "-");
+            PrimaryProcedure();
+        } else if (nextToken().value == "+") {
+            readToken(TokenType.Predefined_Operator, "+");
+            PrimaryProcedure();
+        } else if (nextToken().value == "not") {
+            readToken(TokenType.Predefined_Keyword, "not");
+            PrimaryProcedure();
+        } else if (nextToken().value == "eof") {
+            readToken(TokenType.Predefined_Keyword, "eof");
+        } else if (nextToken().type == TokenType.Identifier) {
+            NameProcedure();
+            if (nextToken().value == "(") {
+                readToken(TokenType.Predefined_Operator, "(");
+                ExpressionProcedure();
+                while (nextToken().value == ",") {
+                    readToken(TokenType.Predefined_Operator, ",");
+                    ExpressionProcedure();
+                }
+                readToken(TokenType.Predefined_Operator, ")");
+            }
+        } else if (nextToken().type == TokenType.Integer) {
+            readToken(TokenType.Integer);
+        } else if (nextToken().type == TokenType.Char) {
+            readToken(TokenType.Char);
+        } else if (nextToken().value == "(") {
+            readToken(TokenType.Predefined_Operator, "(");
+            ExpressionProcedure();
+            readToken(TokenType.Predefined_Operator, ")");
+        } else if (nextToken().value == "succ") {
+            readToken(TokenType.Predefined_Keyword, "succ");
+            readToken(TokenType.Predefined_Operator, "(");
+            ExpressionProcedure();
+            readToken(TokenType.Predefined_Operator, ")");
+        } else if (nextToken().value == "pred") {
+            readToken(TokenType.Predefined_Keyword, "pred");
+            readToken(TokenType.Predefined_Operator, "(");
+            ExpressionProcedure();
+            readToken(TokenType.Predefined_Operator, ")");
+        } else if (nextToken().value == "chr") {
+            readToken(TokenType.Predefined_Keyword, "chr");
+            readToken(TokenType.Predefined_Operator, "(");
+            ExpressionProcedure();
+            readToken(TokenType.Predefined_Operator, ")");
+        } else if (nextToken().value == "ord") {
+            readToken(TokenType.Predefined_Keyword, "ord");
+            readToken(TokenType.Predefined_Operator, "(");
+            ExpressionProcedure();
+            readToken(TokenType.Predefined_Operator, ")");
+        } else {
+            //TODO raie erreor
+        }
+    }
+
+    void NameProcedure(){
+        if(nextToken().type == TokenType.Identifier){
+            readToken(TokenType.Identifier);
+        } else{
+            //TODO raise raise error
+        }
+    }
 
     Token nextToken() {
-        return tokens.get(0);
+        if(tokens.size()>0) {
+            return tokens.get(0);
+        }else{
+            //TODO raise wrong entry command
+            return new Token(TokenType.Identifier,"");
+        }
     }
 
     void readToken(TokenType t, String v) {
-        if (nextToken().type == t && nextToken().value == v) {
-            System.out.println("Consumed : " + tokens.get(0).visualize());
-            tokens.remove(0);
+//        System.out.println(t.toString());
+//        System.out.println(v);
+//        System.out.println(nextToken().visualize());
+
+        if (nextToken().type == t && Objects.equals(nextToken().value, v)) {
+            System.out.println("Consumed : " + tokens.remove(0).visualize());
+//            tokens.remove(0);
         } else {
-            System.out.println("\033[31;0m" + "ERROR for consuming " + nextToken().value + "\033[0m");
+            System.out.println("\033[31;0m" + "ERROR for consuming " + nextToken().value.toUpperCase() + " at " + v.toUpperCase() + "\033[0m");
         }
     }
 
     void readToken(TokenType t) {
+//        System.out.println(t.toString());
+//        System.out.println(nextToken().visualize());
+
         if (nextToken().type == t) {
-            System.out.println("Consumed : " + tokens.get(0).visualize());
-            tokens.remove(0);
+            System.out.println("Consumed : " + tokens.remove(0).visualize());
+//            tokens.remove(0);
         } else {
-            System.out.println("\033[31;0m" + "ERROR for consuming " + nextToken().value + "\033[0m");
+            System.out.println("\033[31;0m" + "ERROR for consuming " + nextToken().value.toUpperCase() + " at " + t.toString().toUpperCase() + "\033[0m");
         }
     }
 

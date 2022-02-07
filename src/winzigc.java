@@ -17,6 +17,9 @@ public class winzigc {
         while (itr.hasNext()) {
             System.out.println(((Token) (itr.next())).visualize());
         }
+
+        Parser parser = new Parser();
+        parser.parse(tokens);
     }
 
     public static String readFile(String path) {
