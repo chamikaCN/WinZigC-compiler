@@ -1,3 +1,4 @@
+import java.beans.Expression;
 import java.util.ArrayList;
 
 public class Parser {
@@ -140,17 +141,77 @@ public class Parser {
         if (nextToken().type == TokenType.Identifier) {
             AssignmentProcedure();
         } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
-            readToken(TokenType.Predefined_Keyword,"output");
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
-
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
-        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "output") {
-
-
+            readToken(TokenType.Predefined_Keyword, "output");
+            readToken(TokenType.Predefined_Operator, "(");
+            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ",") {
+                readToken(TokenType.Predefined_Operator, ",");
+                OutExpProcedure();
+            }
+            readToken(TokenType.Predefined_Operator, ")");
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "if") {
+            readToken(TokenType.Predefined_Keyword, "if");
+            ExpressionProcedure();
+            readToken(TokenType.Predefined_Keyword, "then");
+            StatementProcedure();
+            while (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "else") {
+                readToken(TokenType.Predefined_Keyword, "else");
+                StatementProcedure();
+            }
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "while") {
+            readToken(TokenType.Predefined_Keyword, "while");
+            ExpressionProcedure();
+            readToken(TokenType.Predefined_Keyword, "do");
+            StatementProcedure();
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "repeat") {
+            readToken(TokenType.Predefined_Keyword, "repeat");
+            StatementProcedure();
+            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ";") {
+                readToken(TokenType.Predefined_Operator, ";");
+                StatementProcedure();
+            }
+            readToken(TokenType.Predefined_Keyword, "until");
+            ExpressionProcedure();
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "for") {
+            readToken(TokenType.Predefined_Keyword, "for");
+            readToken(TokenType.Predefined_Operator, "(");
+            ForStatProcedure();
+            readToken(TokenType.Predefined_Operator, ";");
+            ForExpProcedure();
+            readToken(TokenType.Predefined_Operator, ";");
+            ForStatProcedure();
+            readToken(TokenType.Predefined_Operator, ")");
+            StatementProcedure();
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "loop") {
+            readToken(TokenType.Predefined_Keyword, "loop");
+            StatementProcedure();
+            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ";") {
+                readToken(TokenType.Predefined_Operator, ";");
+                StatementProcedure();
+            }
+            readToken(TokenType.Predefined_Keyword, "pool");
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "case") {
+            readToken(TokenType.Predefined_Keyword, "case");
+            ExpressionProcedure();
+            readToken(TokenType.Predefined_Keyword, "of");
+            CaseclausesProcedure();
+            OtherwiseClauseProcedure();
+            readToken(TokenType.Predefined_Keyword, "end");
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "read") {
+            readToken(TokenType.Predefined_Keyword, "read");
+            readToken(TokenType.Predefined_Operator, "(");
+            NameProcedure();
+            while (nextToken().type == TokenType.Predefined_Operator && nextToken().value == ",") {
+                readToken(TokenType.Predefined_Operator, ",");
+                NameProcedure();
+            }
+            readToken(TokenType.Predefined_Operator, ")");
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "exit") {
+            readToken(TokenType.Predefined_Keyword, "exit");
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "return") {
+            readToken(TokenType.Predefined_Keyword, "return");
+            ExpressionProcedure();
+        } else if (nextToken().type == TokenType.Predefined_Keyword && nextToken().value == "begin") {
+            BodyProcedure();
         }
     }
 
