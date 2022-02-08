@@ -9,7 +9,7 @@ public class winzigc {
     static ArrayList<Token> tokens;
 
     public static void main(String[] args) {
-        String input = readFile("test/winzig_03");
+        String input = readFile("test/winzig_15");
 //        System.out.println(input);
         LexScanner scanner = new LexScanner();
         tokens = scanner.tokenize(input);

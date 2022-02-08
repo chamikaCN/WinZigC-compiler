@@ -29,6 +29,7 @@ public class LexScanner {
                 currentString = analyze(currentString);
             } catch (LexAnalyzerException e) {
                 e.printStackTrace();
+                currentString = currentString.substring(1);
             }
         }
         return screenTokens();
@@ -96,7 +97,7 @@ public class LexScanner {
         } else if (initial == '\'') {
             if (s.length() >= 3 && s.charAt(2) == '\'') {
                 tokens.add(new Token(TokenType.White_Space, s.substring(charIndex + 1, charIndex + 2)));
-                s = s.substring(charIndex + 2);
+                s = s.substring(charIndex + 3);
             } else {
                 throw new LexAnalyzerException("Character limit of 'char' exceeded");
             }

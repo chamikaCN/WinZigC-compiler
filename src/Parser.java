@@ -5,7 +5,8 @@ import java.util.Objects;
 public class Parser {
 
     ArrayList<Token> tokens;
-    boolean debugProcedures = true;
+    ArrayList<String> treeNodes = new ArrayList<>();
+    boolean debugProcedures = false;
 
     public void parse(ArrayList<Token> t) {
         tokens = (ArrayList<Token>) t.clone();
@@ -67,7 +68,7 @@ public class Parser {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Types" + "\033[0m");
         if (Objects.equals(nextToken().value, "type")) {
-            readToken(TokenType.Identifier, "type");
+            readToken(TokenType.Predefined_Keyword, "type");
             while (nextToken().type == TokenType.Identifier) {
                 TypeProcedure();
                 readToken(TokenType.Predefined_Operator, ";");
