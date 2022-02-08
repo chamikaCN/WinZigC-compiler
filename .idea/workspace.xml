@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="91de6a27-4a94-4337-b8e4-b7a5a8141c38" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/WinZigC/LexScanner.class" afterPath="$PROJECT_DIR$/out/production/WinZigC/LexScanner.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/WinZigC/winzigc.class" afterPath="$PROJECT_DIR$/out/production/WinZigC/winzigc.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/LexScanner.java" afterPath="$PROJECT_DIR$/src/LexScanner.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Parser.java" afterPath="$PROJECT_DIR$/src/Parser.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/winzigc.java" afterPath="$PROJECT_DIR$/src/winzigc.java" />
     </list>
@@ -17,71 +19,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="winzigc.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/winzigc.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="11" column="47" lean-forward="false" selection-start-line="11" selection-start-column="47" selection-end-line="11" selection-end-column="47" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LexScanner.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/LexScanner.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-31">
-              <caret line="96" column="37" lean-forward="false" selection-start-line="96" selection-start-column="37" selection-end-line="96" selection-end-column="37" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Parser.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Parser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="7" column="52" lean-forward="false" selection-start-line="7" selection-start-column="52" selection-end-line="7" selection-end-column="52" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#ConstsProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#ConstProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#ConstValueProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#TypesProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#TypeProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#LitListProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#SubProgsProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#FcnProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#ParamsProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#DclnsProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#DclnProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#BodyProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#StatementProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#OutExpProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#StringNodeProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#CaseclausesProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#CaseClauseProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#CaseExpressionProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#OtherwiseClauseProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#AssignmentProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#ForStatProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#ForExpProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#ExpressionProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#TermProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#FactorProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#PrimaryProcedure#0;class#Parser#0" expanded="false" />
-                <element signature="method#NameProcedure#0;class#Parser#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -100,11 +38,13 @@
       <find>System</find>
       <find>begin</find>
       <find>of</find>
-      <find>Procedure() {</find>
       <find>&quot;Types&quot;</find>
       <find>type</find>
       <find>'</find>
       <find>TokenType.C</find>
+      <find>Procedure() {</find>
+      <find>Procedure();</find>
+      <find>void</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -123,8 +63,9 @@
         <option value="$PROJECT_DIR$/src/TokenType.java" />
         <option value="$PROJECT_DIR$/src/LexAnalyzerException.java" />
         <option value="$PROJECT_DIR$/src/Token.java" />
-        <option value="$PROJECT_DIR$/src/winzigc.java" />
         <option value="$PROJECT_DIR$/src/LexScanner.java" />
+        <option value="$PROJECT_DIR$/src/winzigc.java" />
+        <option value="$PROJECT_DIR$/src/Node.java" />
         <option value="$PROJECT_DIR$/src/Parser.java" />
       </list>
     </option>
@@ -162,6 +103,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="WinZigC" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WinZigC" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WinZigC" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -484,12 +439,18 @@
       <option name="project" value="LOCAL" />
       <updated>1644289489436</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Parser complete">
+      <created>1644312666155</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1644312666155</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -501,13 +462,13 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20347004" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Flutter Outline" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329429" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26281112" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -531,7 +492,8 @@
     <MESSAGE value="Prior for reducing clause complexity" />
     <MESSAGE value="Completed procedures" />
     <MESSAGE value="Test 1 2 passed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Test 1 2 passed" />
+    <MESSAGE value="Parser complete" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parser complete" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -586,33 +548,6 @@
           <caret line="114" column="37" lean-forward="false" selection-start-line="114" selection-start-column="34" selection-end-line="114" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#ConstsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ConstProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ConstValueProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TypesProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TypeProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#LitListProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#SubProgsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#FcnProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ParamsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#DclnsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#DclnProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#BodyProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#StatementProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#OutExpProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#StringNodeProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseclausesProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseClauseProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseExpressionProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#OtherwiseClauseProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#AssignmentProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ForStatProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ForExpProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ExpressionProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TermProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#FactorProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#PrimaryProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#NameProcedure#0;class#Parser#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -649,6 +584,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="13" column="32" lean-forward="false" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -689,33 +625,6 @@
           <caret line="142" column="61" lean-forward="false" selection-start-line="142" selection-start-column="61" selection-end-line="142" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#ConstsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ConstProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ConstValueProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TypesProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TypeProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#LitListProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#SubProgsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#FcnProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ParamsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#DclnsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#DclnProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#BodyProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#StatementProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#OutExpProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#StringNodeProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseclausesProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseClauseProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseExpressionProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#OtherwiseClauseProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#AssignmentProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ForStatProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ForExpProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ExpressionProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TermProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#FactorProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#PrimaryProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#NameProcedure#0;class#Parser#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -781,49 +690,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/winzig_01">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="32" lean-forward="false" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Exceptions.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/winzig_02.tree">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1023">
-          <caret line="11" column="5" lean-forward="false" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/winzig_02">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="36" column="12" lean-forward="false" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/winzig_03">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="21" column="29" lean-forward="false" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/TokenType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="40" lean-forward="false" selection-start-line="1" selection-start-column="40" selection-end-line="1" selection-end-column="40" />
           <folding />
         </state>
       </provider>
@@ -844,10 +714,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Token.java">
+    <entry file="file://$PROJECT_DIR$/test/winzig_02.tree">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="5" lean-forward="false" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_03.tree">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_04.tree">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TokenType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
-          <caret line="8" column="5" lean-forward="false" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
+          <caret line="1" column="40" lean-forward="false" selection-start-line="1" selection-start-column="40" selection-end-line="1" selection-end-column="40" />
           <folding />
         </state>
       </provider>
@@ -872,40 +766,135 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Parser.java">
+    <entry file="file://$PROJECT_DIR$/src/Token.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
-          <caret line="7" column="52" lean-forward="false" selection-start-line="7" selection-start-column="52" selection-end-line="7" selection-end-column="52" />
+          <caret line="2" column="4" lean-forward="true" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="40" lean-forward="false" selection-start-line="25" selection-start-column="40" selection-end-line="25" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#ConstsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ConstProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ConstValueProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TypesProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TypeProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#LitListProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#SubProgsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#FcnProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ParamsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#DclnsProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#DclnProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#BodyProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#StatementProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#OutExpProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#StringNodeProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseclausesProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseClauseProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#CaseExpressionProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#OtherwiseClauseProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#AssignmentProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ForStatProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ForExpProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#ExpressionProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#TermProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#FactorProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#PrimaryProcedure#0;class#Parser#0" expanded="false" />
-            <element signature="method#NameProcedure#0;class#Parser#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_01.tree">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="10" lean-forward="true" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Parser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="643" column="34" lean-forward="true" selection-start-line="643" selection-start-column="34" selection-end-line="643" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_01">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="13" column="32" lean-forward="false" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_02">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="36" column="12" lean-forward="false" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_11.tree">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-11382">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_11">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1461">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_10">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_09">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_08">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_07">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_06">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_05">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_04">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/winzig_03">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1002">
+          <caret line="21" column="29" lean-forward="false" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>
