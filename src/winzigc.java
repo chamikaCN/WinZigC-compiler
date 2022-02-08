@@ -9,14 +9,14 @@ public class winzigc {
     static ArrayList<Token> tokens;
 
     public static void main(String[] args) {
-        String input = readFile("test/winzig_02");
+        String input = readFile("test/winzig_03");
 //        System.out.println(input);
         LexScanner scanner = new LexScanner();
         tokens = scanner.tokenize(input);
-        Iterator itr = tokens.iterator();
-        while (itr.hasNext()) {
-            System.out.println(((Token) (itr.next())).visualize());
-        }
+//        Iterator itr = tokens.iterator();
+//        while (itr.hasNext()) {
+//            System.out.println(((Token) (itr.next())).visualize());
+//        }
 
         Parser parser = new Parser();
         parser.parse(tokens);
