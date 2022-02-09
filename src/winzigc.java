@@ -6,13 +6,14 @@ import java.util.Scanner;
 
 public class winzigc {
 
-    static ArrayList<Token> tokens;
+    static ArrayList<Token> tokens, tokens1;
 
     public static void main(String[] args) {
-        String input = readFile("test/winzig_01");
+        String input = readFile("test/winzig_15");
 //        System.out.println(input);
         LexScanner scanner = new LexScanner();
         tokens = scanner.tokenize(input);
+
 //        Iterator itr = tokens.iterator();
 //        while (itr.hasNext()) {
 //            System.out.println(((Token) (itr.next())).visualize());

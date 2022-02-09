@@ -1,5 +1,15 @@
-{ dog cat
-bat}
-    {fool}
-{ man dog cat
-bat}
+program factors:
+
+    var
+        i : integer;
+
+    begin
+
+        repeat
+            read(i);
+            d:= i + 1;
+        until i <= 0
+
+    end
+
+factors.

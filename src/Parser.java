@@ -6,7 +6,7 @@ import java.util.Stack;
 public class Parser {
 
     ArrayList<Token> tokens;
-    private boolean debugProcedures = false;
+    private boolean debugProcedures = true;
     private Stack<Node> treeNodes = new Stack<>();
 
     public void parse(ArrayList<Token> t) {
@@ -204,8 +204,10 @@ public class Parser {
         int n = 1;
         while (Objects.equals(nextToken().value, ";")) {
             readToken(TokenType.Predefined_Operator, ";");
-            StatementProcedure();
-            n++;
+            if (!Objects.equals(nextToken().value, "end")) {
+                StatementProcedure();
+                n++;
+            }
         }
         readToken(TokenType.Predefined_Keyword, "end");
         buildTree("block", n);
@@ -268,7 +270,7 @@ public class Parser {
             ForStatProcedure();
             readToken(TokenType.Predefined_Operator, ")");
             StatementProcedure();
-            buildTree("for", 3);
+            buildTree("for", 4);
         } else if (Objects.equals(nextToken().value, "loop")) {
             readToken(TokenType.Predefined_Keyword, "loop");
             StatementProcedure();
@@ -284,10 +286,10 @@ public class Parser {
             readToken(TokenType.Predefined_Keyword, "case");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Keyword, "of");
-            CaseclausesProcedure();
-            OtherwiseClauseProcedure();
+            int caseCount = CaseclausesProcedure();
+            int otherwise = OtherwiseClauseProcedure();
             readToken(TokenType.Predefined_Keyword, "end");
-            buildTree("case", 3);
+            buildTree("case", 1 + caseCount + otherwise);
         } else if (Objects.equals(nextToken().value, "read")) {
             readToken(TokenType.Predefined_Keyword, "read");
             readToken(TokenType.Predefined_Operator, "(");
@@ -335,15 +337,18 @@ public class Parser {
         readToken(TokenType.String);
     }
 
-    private void CaseclausesProcedure() {
+    private int CaseclausesProcedure() {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Caseclauses" + "\033[0m");
         CaseClauseProcedure();
+        int m = 1;
         readToken(TokenType.Predefined_Operator, ";");
         while (nextToken().type == TokenType.Integer || nextToken().type == TokenType.Char || nextToken().type == TokenType.Identifier) {
             CaseClauseProcedure();
+            m++;
             readToken(TokenType.Predefined_Operator, ";");
         }
+        return m;
     }
 
     private void CaseClauseProcedure() {
@@ -372,16 +377,19 @@ public class Parser {
         }
     }
 
-    private void OtherwiseClauseProcedure() {
+    private int OtherwiseClauseProcedure() {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Otherwise" + "\033[0m");
+        int m = 0;
         if (Objects.equals(nextToken().value, "otherwise")) {
             readToken(TokenType.Predefined_Keyword, "otherwise");
             StatementProcedure();
+            m++;
             buildTree("otherwise", 1);
         } else {
             //TODO raise error
         }
+        return m;
     }
 
     private void AssignmentProcedure() {
@@ -406,6 +414,7 @@ public class Parser {
             System.out.println("\033[33;0m" + "ForStat" + "\033[0m");
         if (nextToken().type == TokenType.Identifier) {
             AssignmentProcedure();
+        } else {
             buildTree("<null>", 0);
         }
     }
@@ -503,7 +512,11 @@ public class Parser {
     private void PrimaryProcedure() {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Primary" + "\033[0m");
-        if (Objects.equals(nextToken().value, "-")) {
+        if (nextToken().type == TokenType.Integer) {
+            readToken(TokenType.Integer);
+        } else if (nextToken().type == TokenType.Char) {
+            readToken(TokenType.Char);
+        } else if (Objects.equals(nextToken().value, "-")) {
             readToken(TokenType.Predefined_Operator, "-");
             PrimaryProcedure();
             buildTree("-", 1);
@@ -513,16 +526,17 @@ public class Parser {
         } else if (Objects.equals(nextToken().value, "not")) {
             readToken(TokenType.Predefined_Keyword, "not");
             PrimaryProcedure();
-            buildTree("eof", 1);
+            buildTree("not", 1);
         } else if (Objects.equals(nextToken().value, "eof")) {
             readToken(TokenType.Predefined_Keyword, "eof");
             buildTree("eof", 0);
         } else if (nextToken().type == TokenType.Identifier) {
             NameProcedure();
+            int n = 1;
             if (Objects.equals(nextToken().value, "(")) {
                 readToken(TokenType.Predefined_Operator, "(");
                 ExpressionProcedure();
-                int n = 1;
+                n++;
                 while (Objects.equals(nextToken().value, ",")) {
                     readToken(TokenType.Predefined_Operator, ",");
                     ExpressionProcedure();
@@ -531,10 +545,6 @@ public class Parser {
                 readToken(TokenType.Predefined_Operator, ")");
                 buildTree("call", n);
             }
-        } else if (nextToken().type == TokenType.Integer) {
-            readToken(TokenType.Integer);
-        } else if (nextToken().type == TokenType.Char) {
-            readToken(TokenType.Char);
         } else if (Objects.equals(nextToken().value, "(")) {
             readToken(TokenType.Predefined_Operator, "(");
             ExpressionProcedure();
@@ -590,13 +600,13 @@ public class Parser {
     private void readToken(TokenType t, String v) {
         if (nextToken().type == t && Objects.equals(nextToken().value, v)) {
             if (nextToken().type == TokenType.Identifier) {
-                treeNodes.push(new Node("<identifier>", new Node(nextToken().value, null, null,0), null,1));
+                treeNodes.push(new Node("<identifier>", new Node(nextToken().value, null, null, 0), null, 1));
             } else if (nextToken().type == TokenType.Integer) {
-                treeNodes.push(new Node("<integer>", new Node(nextToken().value, null, null,0), null,1));
+                treeNodes.push(new Node("<integer>", new Node(nextToken().value, null, null, 0), null, 1));
             } else if (nextToken().type == TokenType.Char) {
-                treeNodes.push(new Node("<char>", new Node(nextToken().value, null, null,0), null,1));
+                treeNodes.push(new Node("<char>", new Node(nextToken().value, null, null, 0), null, 1));
             } else if (nextToken().type == TokenType.String) {
-                treeNodes.push(new Node("<string>", new Node(nextToken().value, null, null,0), null,1));
+                treeNodes.push(new Node("<string>", new Node(nextToken().value, null, null, 0), null, 1));
             }
             if (debugProcedures) {
                 System.out.println("Consumed : " + tokens.remove(0).visualize());
@@ -611,13 +621,17 @@ public class Parser {
     private void readToken(TokenType t) {
         if (nextToken().type == t) {
             if (nextToken().type == TokenType.Identifier) {
-                treeNodes.push(new Node("<identifier>", new Node(nextToken().value, null, null,0), null,1));
+                treeNodes.push(new Node("<identifier>", new Node(nextToken().value, null, null, 0), null, 1));
+//                System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t + "\033[0m");
             } else if (nextToken().type == TokenType.Integer) {
-                treeNodes.push(new Node("<integer>", new Node(nextToken().value, null, null,0), null,1));
+                treeNodes.push(new Node("<integer>", new Node(nextToken().value, null, null, 0), null, 1));
+//                System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t + "\033[0m");
             } else if (nextToken().type == TokenType.Char) {
-                treeNodes.push(new Node("<char>", new Node(nextToken().value, null, null,0), null,1));
+                treeNodes.push(new Node("<char>", new Node(nextToken().value, null, null, 0), null, 1));
+//                System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t + "\033[0m");
             } else if (nextToken().type == TokenType.String) {
-                treeNodes.push(new Node("<string>", new Node(nextToken().value, null, null,0), null,1));
+                treeNodes.push(new Node("<string>", new Node(nextToken().value, null, null, 0), null, 1));
+//                System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t + "\033[0m");
             }
             if (debugProcedures) {
                 System.out.println("Consumed : " + tokens.remove(0).visualize());
@@ -631,17 +645,26 @@ public class Parser {
 
     private void buildTree(String name, int childCount) {
         Node p = null;
+        String det = "";
         for (int i = 0; i < childCount; i++) {
             Node c = treeNodes.pop();
+            det = det + " : " + c.name;
             c.right = p;
             p = c;
         }
-        treeNodes.push(new Node(name, p, null,childCount));
+        treeNodes.push(new Node(name, p, null, childCount));
+        if (debugProcedures)
+            System.out.println("\033[35;0m" + det + " --> pushed into " + name + "\033[0m");
+
     }
 
     private void visualizeTree() {
-        System.out.println("Number of nodes in Stack : "+treeNodes.size());
-        visit(treeNodes.pop(), 0);
+        int size = treeNodes.size();
+        System.out.println("Number of nodes in Stack : " + treeNodes.size());
+        for (int i = 0; i < size; i++) {
+            visit(treeNodes.pop(), 0);
+            System.out.println("\033[36;0m" + "============================" + "\033[0m");
+        }
 //        if (treeNodes.size() == 1) {
 //            visit(treeNodes.peek(), 0);
 //        } else {
@@ -653,11 +676,15 @@ public class Parser {
     }
 
     private void visit(Node n, int level) {
-        if(n!= null) {
-            n.visualize(level);
+//        if(n!= null) {
+        n.visualize(level);
+        if (n.left != null) {
             visit(n.left, level + 1);
+        }
+        if (n.right != null) {
             visit(n.right, level);
         }
+//        }
     }
 
 }
