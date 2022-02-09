@@ -4,15 +4,12 @@ import java.util.Objects;
 
 public class LexScanner {
 
+    private static String[] keyword_list = {"program", "var", "const", "type", "function", "return", "begin", "end", "output", "if", "then", "else", "while", "do", "case", "of", "otherwise", "repeat", "for", "until", "loop", "pool", "exit", "mod", "and", "or", "not", "read", "succ", "pred", "chr", "ord", "eof"};
+    private static ArrayList<String> KEYWORDS = new ArrayList<>(Arrays.asList(keyword_list));
+    private static String[] operator_list = {":=:", ":=", "..", "<=", "<>", "<", ">=", ">", "=", ":", ";", ".", ",", "(", ")", "+", "-", "*", "/"};
+    private static ArrayList<String> OPERATORS = new ArrayList<>(Arrays.asList(operator_list));
 
-    //    public static ArrayList<Character> WHITESPACES = new ArrayList<Character>(Arrays.asList(' ', '\t'));
-    static String[] keyword_list = {"program", "var", "const", "type", "function", "return", "begin", "end", "output", "if", "then", "else", "while", "do", "case", "of", "otherwise", "repeat", "for", "until", "loop", "pool", "exit", "mod", "and", "or", "not", "read", "succ", "pred", "chr", "ord", "eof"};
-    public static ArrayList<String> KEYWORDS = new ArrayList<String>(Arrays.asList(keyword_list));
-    static String[] operator_list = {":=:", ":=", "..", "<=", "<>", "<", ">=", ">", "=", ":", ";", ".", ",", "(", ")", "+", "-", "*", "/"};
-    public static ArrayList<String> OPERATORS = new ArrayList<String>(Arrays.asList(operator_list));
-
-    int charIndex;
-    ArrayList<Token> tokens = new ArrayList<>();
+    private ArrayList<Token> tokens = new ArrayList<>();
 
     public static ArrayList<Character> convertStringToCharList(String str) {
         ArrayList<Character> chars = new ArrayList<>();
@@ -22,7 +19,7 @@ public class LexScanner {
         return chars;
     }
 
-    public ArrayList<Token> tokenize(String s) {
+    ArrayList<Token> tokenize(String s) {
         String currentString = s;
         while (currentString.length() > 0) {
             try {
@@ -39,13 +36,12 @@ public class LexScanner {
 //        }
     }
 
-    public String analyze(String s) throws LexAnalyzerException {
+    private String analyze(String s) throws LexAnalyzerException {
 
-        charIndex = 0;
+        int charIndex = 0;
         int charLimit = s.length();
         char initial = s.charAt(0);
 
-        Token token;
 //        System.out.println("\033[32;0m" + charLimit + convertStringToCharList(s) + "\033[0m");
 
         if (initial == '{') {
@@ -112,7 +108,7 @@ public class LexScanner {
 
         } else if (Character.isLetterOrDigit(initial) || initial == '_') {
             charIndex++;
-            String tokenString = "";
+            String tokenString;
             while (true) {
                 if (charIndex >= charLimit) {
                     tokenString = s;
@@ -158,7 +154,7 @@ public class LexScanner {
         return s;
     }
 
-    public ArrayList<Token> screenTokens() {
+    private ArrayList<Token> screenTokens() {
         ArrayList<Token> screened_tokens = new ArrayList<>();
         for (Token t : tokens) {
             if (t.type != TokenType.Comment && t.type != TokenType.White_Space) {

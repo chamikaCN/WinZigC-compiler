@@ -3,19 +3,24 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Stack;
 
-public class Parser {
+class Parser {
 
-    ArrayList<Token> tokens;
-    private boolean debugProcedures = true;
+    private ArrayList<Token> tokens;
+    private boolean debugProcedures = false;
     private Stack<Node> treeNodes = new Stack<>();
 
-    public void parse(ArrayList<Token> t) {
+    void parse(ArrayList<Token> t) {
         tokens = (ArrayList<Token>) t.clone();
-        WinzigProcedure();
+        try {
+            WinzigProcedure();
+        } catch (ParserException e) {
+            System.out.println(nextToken().type + " : " + nextToken().value);
+            e.printStackTrace();
+        }
         visualizeTree();
     }
 
-    private void WinzigProcedure() {
+    private void WinzigProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "WinZig" + "\033[0m");
         readToken(TokenType.Predefined_Keyword, "program");
@@ -32,7 +37,7 @@ public class Parser {
 
     }
 
-    private void ConstsProcedure() {
+    private void ConstsProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Consts" + "\033[0m");
         if (Objects.equals(nextToken().value, "const")) {
@@ -52,7 +57,7 @@ public class Parser {
         }
     }
 
-    private void ConstProcedure() {
+    private void ConstProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Const" + "\033[0m");
         NameProcedure();
@@ -61,7 +66,7 @@ public class Parser {
         buildTree("const", 2);
     }
 
-    private void ConstValueProcedure() {
+    private void ConstValueProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "ConstValue" + "\033[0m");
         if (nextToken().type == TokenType.Integer) {
@@ -71,11 +76,11 @@ public class Parser {
         } else if (nextToken().type == TokenType.Identifier) {
             NameProcedure();
         } else {
-            //TODO raise error
+            throw new ParserException("");
         }
     }
 
-    private void TypesProcedure() {
+    private void TypesProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Types" + "\033[0m");
         if (Objects.equals(nextToken().value, "type")) {
@@ -94,7 +99,7 @@ public class Parser {
         }
     }
 
-    private void TypeProcedure() {
+    private void TypeProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Type" + "\033[0m");
         NameProcedure();
@@ -103,7 +108,7 @@ public class Parser {
         buildTree("type", 2);
     }
 
-    private void LitListProcedure() {
+    private void LitListProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "LitList" + "\033[0m");
         readToken(TokenType.Predefined_Operator, "(");
@@ -118,7 +123,7 @@ public class Parser {
         buildTree("lit", n);
     }
 
-    private void SubProgsProcedure() {
+    private void SubProgsProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "SubProgs" + "\033[0m");
         int n = 0;
@@ -129,7 +134,7 @@ public class Parser {
         buildTree("subprogs", n);
     }
 
-    private void FcnProcedure() {
+    private void FcnProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Fcn" + "\033[0m");
         readToken(TokenType.Predefined_Keyword, "function");
@@ -149,7 +154,7 @@ public class Parser {
         buildTree("fcn", 8);
     }
 
-    private void ParamsProcedure() {
+    private void ParamsProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Params" + "\033[0m");
         DclnProcedure();
@@ -162,7 +167,7 @@ public class Parser {
         buildTree("params", n);
     }
 
-    private void DclnsProcedure() {
+    private void DclnsProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Dclns" + "\033[0m");
         if (Objects.equals(nextToken().value, "var")) {
@@ -181,7 +186,7 @@ public class Parser {
         }
     }
 
-    private void DclnProcedure() {
+    private void DclnProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Dcln" + "\033[0m");
         NameProcedure();
@@ -196,7 +201,7 @@ public class Parser {
         buildTree("var", n + 1);
     }
 
-    private void BodyProcedure() {
+    private void BodyProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Body" + "\033[0m");
         readToken(TokenType.Predefined_Keyword, "begin");
@@ -213,7 +218,7 @@ public class Parser {
         buildTree("block", n);
     }
 
-    private void StatementProcedure() {
+    private void StatementProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Statement" + "\033[0m");
         if (nextToken().type == TokenType.Identifier) {
@@ -316,18 +321,18 @@ public class Parser {
         }
     }
 
-    private void OutExpProcedure() {
+    private void OutExpProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "OutExp" + "\033[0m");
         if (nextToken().type == TokenType.String) {
             StringNodeProcedure();
             buildTree("string", 1);
         } else if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char || nextToken().type == TokenType.Integer ||
-                new ArrayList<String>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value)) {
+                new ArrayList<>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value)) {
             ExpressionProcedure();
             buildTree("integer", 1);
         } else {
-            //TODO raise error
+            throw new ParserException("");
         }
     }
 
@@ -337,7 +342,7 @@ public class Parser {
         readToken(TokenType.String);
     }
 
-    private int CaseclausesProcedure() {
+    private int CaseclausesProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Caseclauses" + "\033[0m");
         CaseClauseProcedure();
@@ -351,7 +356,7 @@ public class Parser {
         return m;
     }
 
-    private void CaseClauseProcedure() {
+    private void CaseClauseProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Caseclause" + "\033[0m");
         CaseExpressionProcedure();
@@ -366,7 +371,7 @@ public class Parser {
         buildTree("case_clause", n + 1);
     }
 
-    private void CaseExpressionProcedure() {
+    private void CaseExpressionProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "CaseExpression" + "\033[0m");
         ConstValueProcedure();
@@ -377,7 +382,7 @@ public class Parser {
         }
     }
 
-    private int OtherwiseClauseProcedure() {
+    private int OtherwiseClauseProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Otherwise" + "\033[0m");
         int m = 0;
@@ -386,13 +391,11 @@ public class Parser {
             StatementProcedure();
             m++;
             buildTree("otherwise", 1);
-        } else {
-            //TODO raise error
         }
         return m;
     }
 
-    private void AssignmentProcedure() {
+    private void AssignmentProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Assignment" + "\033[0m");
         NameProcedure();
@@ -405,11 +408,11 @@ public class Parser {
             NameProcedure();
             buildTree("swap", 2);
         } else {
-            //TODO raise error
+            throw new ParserException("");
         }
     }
 
-    private void ForStatProcedure() {
+    private void ForStatProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "ForStat" + "\033[0m");
         if (nextToken().type == TokenType.Identifier) {
@@ -419,18 +422,18 @@ public class Parser {
         }
     }
 
-    private void ForExpProcedure() {
+    private void ForExpProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "ForExp" + "\033[0m");
         if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char || nextToken().type == TokenType.Integer ||
-                new ArrayList<String>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value)) {
+                new ArrayList<>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value)) {
             ExpressionProcedure();
         } else {
             buildTree("true", 0);
         }
     }
 
-    private void ExpressionProcedure() {
+    private void ExpressionProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Expression" + "\033[0m");
         TermProcedure();
@@ -458,12 +461,10 @@ public class Parser {
             readToken(TokenType.Predefined_Operator, "<>");
             TermProcedure();
             buildTree("<>", 2);
-        } else {
-            //TODO raise error
         }
     }
 
-    private void TermProcedure() {
+    private void TermProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Term" + "\033[0m");
         FactorProcedure();
@@ -484,7 +485,7 @@ public class Parser {
         }
     }
 
-    private void FactorProcedure() {
+    private void FactorProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Factor" + "\033[0m");
         PrimaryProcedure();
@@ -509,7 +510,7 @@ public class Parser {
         }
     }
 
-    private void PrimaryProcedure() {
+    private void PrimaryProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Primary" + "\033[0m");
         if (nextToken().type == TokenType.Integer) {
@@ -574,17 +575,17 @@ public class Parser {
             readToken(TokenType.Predefined_Operator, ")");
             buildTree("ord", 1);
         } else {
-            //TODO raie erreor
+            throw new ParserException("");
         }
     }
 
-    private void NameProcedure() {
+    private void NameProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "Name" + "\033[0m");
         if (nextToken().type == TokenType.Identifier) {
             readToken(TokenType.Identifier);
         } else {
-            //TODO raise raise error
+            throw new ParserException("");
         }
     }
 
@@ -645,10 +646,10 @@ public class Parser {
 
     private void buildTree(String name, int childCount) {
         Node p = null;
-        String det = "";
+        StringBuilder det = new StringBuilder();
         for (int i = 0; i < childCount; i++) {
             Node c = treeNodes.pop();
-            det = det + " : " + c.name;
+            det.append(" : ").append(c.name);
             c.right = p;
             p = c;
         }
@@ -659,24 +660,18 @@ public class Parser {
     }
 
     private void visualizeTree() {
-        int size = treeNodes.size();
-        System.out.println("Number of nodes in Stack : " + treeNodes.size());
-        for (int i = 0; i < size; i++) {
+        if (debugProcedures) {
+            int size = treeNodes.size();
+            System.out.println("Number of nodes in Stack : " + treeNodes.size());
+            for (int i = 0; i < size; i++) {
+                visit(treeNodes.pop(), 0);
+            }
+        } else {
             visit(treeNodes.pop(), 0);
-            System.out.println("\033[36;0m" + "============================" + "\033[0m");
         }
-//        if (treeNodes.size() == 1) {
-//            visit(treeNodes.peek(), 0);
-//        } else {
-//            System.out.println(treeNodes.size());
-//            for (Node m : treeNodes) {
-//                System.out.println(m.name);
-//            }
-//        }
     }
 
     private void visit(Node n, int level) {
-//        if(n!= null) {
         n.visualize(level);
         if (n.left != null) {
             visit(n.left, level + 1);
@@ -684,7 +679,6 @@ public class Parser {
         if (n.right != null) {
             visit(n.right, level);
         }
-//        }
     }
 
 }
