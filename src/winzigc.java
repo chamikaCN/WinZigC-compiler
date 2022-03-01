@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class winzigc {
 
     public static void main(String[] args) {
-        String input = readFile("test/winzig_15");
+        String input = readFile(args[0]);
         LexScanner scanner = new LexScanner();
         ArrayList<Token> tokens = scanner.tokenize(input);
         Parser parser = new Parser();
