@@ -1,3 +1,5 @@
+package main.java;
+
 class Token {
     final TokenType type;
     final String value;

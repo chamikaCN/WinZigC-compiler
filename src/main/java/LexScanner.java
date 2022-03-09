@@ -1,3 +1,5 @@
+package main.java;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -32,7 +34,7 @@ public class LexScanner {
         return screenTokens();
 //        Iterator itr = tokens.iterator();
 //        while (itr.hasNext()) {
-//            System.out.println(((Token) (itr.next())).visualize());
+//            System.out.println(((main.java.Token) (itr.next())).visualize());
 //        }
     }
 
