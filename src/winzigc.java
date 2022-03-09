@@ -6,7 +6,12 @@ import java.util.Scanner;
 public class winzigc {
 
     public static void main(String[] args) {
-        String input = readFile(args[0]);
+        
+        System.out.println(args[1]);
+        // if (!Validator.validateArgs(args)) {
+        //     return;
+        // }
+        String input = readFile(args[1]);
         LexScanner scanner = new LexScanner();
         ArrayList<Token> tokens = scanner.tokenize(input);
         Parser parser = new Parser();

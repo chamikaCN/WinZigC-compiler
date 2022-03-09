@@ -327,8 +327,10 @@ class Parser {
         if (nextToken().type == TokenType.String) {
             StringNodeProcedure();
             buildTree("string", 1);
-        } else if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char || nextToken().type == TokenType.Integer ||
-                new ArrayList<>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value)) {
+        } else if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char
+                || nextToken().type == TokenType.Integer ||
+                new ArrayList<>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord"))
+                        .contains(nextToken().value)) {
             ExpressionProcedure();
             buildTree("integer", 1);
         } else {
@@ -348,7 +350,8 @@ class Parser {
         CaseClauseProcedure();
         int m = 1;
         readToken(TokenType.Predefined_Operator, ";");
-        while (nextToken().type == TokenType.Integer || nextToken().type == TokenType.Char || nextToken().type == TokenType.Identifier) {
+        while (nextToken().type == TokenType.Integer || nextToken().type == TokenType.Char
+                || nextToken().type == TokenType.Identifier) {
             CaseClauseProcedure();
             m++;
             readToken(TokenType.Predefined_Operator, ";");
@@ -425,8 +428,10 @@ class Parser {
     private void ForExpProcedure() throws ParserException {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "ForExp" + "\033[0m");
-        if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char || nextToken().type == TokenType.Integer ||
-                new ArrayList<>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord")).contains(nextToken().value)) {
+        if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char
+                || nextToken().type == TokenType.Integer ||
+                new ArrayList<>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord"))
+                        .contains(nextToken().value)) {
             ExpressionProcedure();
         } else {
             buildTree("true", 0);
@@ -593,7 +598,6 @@ class Parser {
         if (tokens.size() > 0) {
             return tokens.get(0);
         } else {
-            //TODO raise wrong entry command
             return new Token(TokenType.Identifier, "");
         }
     }
@@ -615,7 +619,8 @@ class Parser {
                 tokens.remove(0);
             }
         } else {
-            System.out.println("\033[31;0m" + "ERROR for consuming " + nextToken().value.toUpperCase() + " at " + v.toUpperCase() + "\033[0m");
+            System.out.println("\033[31;0m" + "ERROR for consuming " + nextToken().value.toUpperCase() + " at "
+                    + v.toUpperCase() + "\033[0m");
         }
     }
 
@@ -623,16 +628,20 @@ class Parser {
         if (nextToken().type == t) {
             if (nextToken().type == TokenType.Identifier) {
                 treeNodes.push(new Node("<identifier>", new Node(nextToken().value, null, null, 0), null, 1));
-//                System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t + "\033[0m");
+                // System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t +
+                // "\033[0m");
             } else if (nextToken().type == TokenType.Integer) {
                 treeNodes.push(new Node("<integer>", new Node(nextToken().value, null, null, 0), null, 1));
-//                System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t + "\033[0m");
+                // System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t +
+                // "\033[0m");
             } else if (nextToken().type == TokenType.Char) {
                 treeNodes.push(new Node("<char>", new Node(nextToken().value, null, null, 0), null, 1));
-//                System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t + "\033[0m");
+                // System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t +
+                // "\033[0m");
             } else if (nextToken().type == TokenType.String) {
                 treeNodes.push(new Node("<string>", new Node(nextToken().value, null, null, 0), null, 1));
-//                System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t + "\033[0m");
+                // System.out.println("\033[35;0m" + nextToken().value +" --> pushed into "+ t +
+                // "\033[0m");
             }
             if (debugProcedures) {
                 System.out.println("Consumed : " + tokens.remove(0).visualize());
@@ -640,7 +649,8 @@ class Parser {
                 tokens.remove(0);
             }
         } else {
-            System.out.println("\033[31;0m" + "ERROR for consuming " + nextToken().value.toUpperCase() + " at " + t.toString().toUpperCase() + "\033[0m");
+            System.out.println("\033[31;0m" + "ERROR for consuming " + nextToken().value.toUpperCase() + " at "
+                    + t.toString().toUpperCase() + "\033[0m");
         }
     }
 
@@ -671,7 +681,7 @@ class Parser {
         }
     }
 
-    public void writeTree(String filePath){
+    public void writeTree(String filePath) {
         try {
             File file = new File(filePath);
             BufferedWriter output = new BufferedWriter(new FileWriter(file));
@@ -684,8 +694,8 @@ class Parser {
     }
 
     private void visit(Node n, int level) {
-//        fw.write(n.visualize(level));
-//        fw.newLine();
+        // fw.write(n.visualize(level));
+        // fw.newLine();
         System.out.println(n.visualize(level));
         if (n.left != null) {
             visit(n.left, level + 1);
