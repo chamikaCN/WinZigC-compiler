@@ -214,6 +214,9 @@ class Parser {
             if (!Objects.equals(nextToken().value, "end")) {
                 StatementProcedure();
                 n++;
+            } else {
+                buildTree("<null>", 0);
+                n++;
             }
         }
         readToken(TokenType.Predefined_Keyword, "end");
