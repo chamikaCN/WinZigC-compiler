@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -17,7 +18,6 @@ class Parser {
             System.out.println(nextToken().type + " : " + nextToken().value);
             e.printStackTrace();
         }
-        visualizeTree();
     }
 
     private void WinzigProcedure() throws ParserException {
@@ -659,7 +659,7 @@ class Parser {
 
     }
 
-    private void visualizeTree() {
+    public void visualizeTree() {
         if (debugProcedures) {
             int size = treeNodes.size();
             System.out.println("Number of nodes in Stack : " + treeNodes.size());
@@ -671,8 +671,22 @@ class Parser {
         }
     }
 
+    public void writeTree(String filePath){
+        try {
+            File file = new File(filePath);
+            BufferedWriter output = new BufferedWriter(new FileWriter(file));
+            visit(treeNodes.pop(), 0);
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void visit(Node n, int level) {
-        n.visualize(level);
+//        fw.write(n.visualize(level));
+//        fw.newLine();
+        System.out.println(n.visualize(level));
         if (n.left != null) {
             visit(n.left, level + 1);
         }

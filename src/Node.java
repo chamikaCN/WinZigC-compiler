@@ -14,7 +14,7 @@ class Node {
         right = r;
     }
 
-    void visualize(int level) {
+    String visualize(int level) {
         List<String> vals = Collections.nCopies(level, ".");
         StringBuilder sb = new StringBuilder();
         sb.append(String.join(" ", vals));
@@ -23,6 +23,6 @@ class Node {
         }
         sb.append(name);
         sb.append("(").append(num).append(")");
-        System.out.println(sb.toString());
+        return sb.toString();
     }
 }
