@@ -1,0 +1,19 @@
+program greatestFactor:
+
+var
+    num : integer;
+
+function GCD ( n : integer ):integer;
+var
+    i : integer;
+begin
+	for (i := n; i = 1; i:=i-1)
+	    if n mod i = 0 then output ( i )
+end GCD;
+
+begin
+
+	read(num);
+	d:=Factor ( num )
+
+end greatestFactor.

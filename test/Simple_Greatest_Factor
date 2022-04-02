@@ -1,0 +1,13 @@
+program greatestFactor:
+
+var
+    num : integer;
+    i : integer;
+
+begin
+
+	read(num);
+	for (i := num; i = 1; i:=i-1)
+    	    if num mod i = 0 then output ( i )
+
+end greatestFactor.

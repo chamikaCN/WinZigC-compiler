@@ -1,0 +1,16 @@
+            LIT    0
+            LIT    1
+            SGV    0
+     L2     LGV    0
+            LIT    10
+            BOP    BLE
+            COND   L3     L4
+     L3     SOS    INPUT
+            SOS    OUTPUT
+            SOS    OUTPUTL
+            LGV    0
+            LIT    1
+            BOP    BPLUS
+            SGV    0
+            GOTO   L2
+     L4     HALT
