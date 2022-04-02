@@ -8,11 +8,7 @@ import java.util.Scanner;
 public class winzigc {
 
     public static void main(String[] args) {
-        
-        // System.out.println(args[1]);
-        // if (!Validator.validateArgs(args)) {
-        //     return;
-        // }
+
         String input = readFile(args[1]);
         LexScanner scanner = new LexScanner();
         ArrayList<Token> tokens = scanner.tokenize(input);
