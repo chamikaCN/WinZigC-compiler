@@ -1,21 +1,23 @@
 package main.java;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 
 class Parser {
 
     private ArrayList<Token> tokens;
-    private boolean debugProcedures = false;
+    private boolean debugProcedures = true;
     private Stack<Node> treeNodes = new Stack<>();
+    private Set<String> grammarRules = new HashSet<>();
 
     void parse(ArrayList<Token> t) {
         tokens = (ArrayList<Token>) t.clone();
         try {
             WinzigProcedure();
+            System.out.println("rules :"+ grammarRules.size());
+            for (String s: grammarRules) {
+                System.out.println(s);
+            }
         } catch (ParserException e) {
             System.out.println(nextToken().type + " : " + nextToken().value);
             e.printStackTrace();
@@ -35,6 +37,7 @@ class Parser {
         BodyProcedure();
         NameProcedure();
         readToken(TokenType.Predefined_Operator, ".");
+        grammarRules.add("Winzig -> 'program' Name ':' Consts Types Dclns SubProgs Body Name '.'");
         buildTree("program", 7);
 
     }
@@ -52,9 +55,11 @@ class Parser {
                 n++;
             }
             readToken(TokenType.Predefined_Operator, ";");
+            grammarRules.add("Consts -> 'const' Const list ',' ';'");
             buildTree("consts", n);
 
         } else {
+            grammarRules.add("Consts -> ");
             buildTree("consts", 0);
         }
     }
@@ -65,6 +70,7 @@ class Parser {
         NameProcedure();
         readToken(TokenType.Predefined_Operator, "=");
         ConstValueProcedure();
+        grammarRules.add("Const -> Name '=' ConstValue");
         buildTree("const", 2);
     }
 
@@ -73,10 +79,13 @@ class Parser {
             System.out.println("\033[33;0m" + "ConstValue" + "\033[0m");
         if (nextToken().type == TokenType.Integer) {
             readToken(TokenType.Integer);
+//            grammarRules.add("ConstValue -> '<integer>'");
         } else if (nextToken().type == TokenType.Char) {
             readToken(TokenType.Char);
+//            grammarRules.add("ConstValue -> '<char>'");
         } else if (nextToken().type == TokenType.Identifier) {
             NameProcedure();
+//            grammarRules.add("ConstValue -> Name");
         } else {
             throw new ParserException("");
         }
@@ -95,8 +104,10 @@ class Parser {
                 n++;
                 readToken(TokenType.Predefined_Operator, ";");
             }
+            grammarRules.add("Types -> 'type' (Type ';')+");
             buildTree("types", n);
         } else {
+            grammarRules.add("Types -> ");
             buildTree("types", 0);
         }
     }
@@ -107,6 +118,7 @@ class Parser {
         NameProcedure();
         readToken(TokenType.Predefined_Operator, "=");
         LitListProcedure();
+        grammarRules.add("Type -> Name '=' LitList");
         buildTree("type", 2);
     }
 
@@ -122,6 +134,7 @@ class Parser {
             n++;
         }
         readToken(TokenType.Predefined_Operator, ")");
+        grammarRules.add("LitList -> '(' Name list ',' ')'");
         buildTree("lit", n);
     }
 
@@ -133,6 +146,7 @@ class Parser {
             FcnProcedure();
             n++;
         }
+        grammarRules.add("SubProgs -> Fcn*");
         buildTree("subprogs", n);
     }
 
@@ -153,6 +167,7 @@ class Parser {
         BodyProcedure();
         NameProcedure();
         readToken(TokenType.Predefined_Operator, ";");
+        grammarRules.add("Fcn -> 'function' Name '(' Params ')' ':' Name ';' Consts Types Dclns Body Name ';'");
         buildTree("fcn", 8);
     }
 
@@ -166,6 +181,7 @@ class Parser {
             DclnProcedure();
             n++;
         }
+        grammarRules.add("Params -> Dcln list ';'");
         buildTree("params", n);
     }
 
@@ -182,8 +198,10 @@ class Parser {
                 n++;
                 readToken(TokenType.Predefined_Operator, ";");
             }
+            grammarRules.add("Dclns -> 'var' (Dcln ';')+");
             buildTree("dclns", n);
         } else {
+            grammarRules.add("Dclns -> ");
             buildTree("dclns", 0);
         }
     }
@@ -200,6 +218,7 @@ class Parser {
         }
         readToken(TokenType.Predefined_Operator, ":");
         NameProcedure();
+        grammarRules.add("Dcln -> Name list ',' ':' Name");
         buildTree("var", n + 1);
     }
 
@@ -220,6 +239,7 @@ class Parser {
             }
         }
         readToken(TokenType.Predefined_Keyword, "end");
+        grammarRules.add("Body -> 'begin' Statement list ';' 'end'");
         buildTree("block", n);
     }
 
@@ -228,6 +248,7 @@ class Parser {
             System.out.println("\033[33;0m" + "Statement" + "\033[0m");
         if (nextToken().type == TokenType.Identifier) {
             AssignmentProcedure();
+//            grammarRules.add("Statement -> Assignment");
         } else if (Objects.equals(nextToken().value, "output")) {
             readToken(TokenType.Predefined_Keyword, "output");
             readToken(TokenType.Predefined_Operator, "(");
@@ -239,6 +260,7 @@ class Parser {
                 n++;
             }
             readToken(TokenType.Predefined_Operator, ")");
+            grammarRules.add("Statement -> 'output' '(' OutExp list ',' ')'");
             buildTree("output", n);
         } else if (Objects.equals(nextToken().value, "if")) {
             readToken(TokenType.Predefined_Keyword, "if");
@@ -251,12 +273,14 @@ class Parser {
                 StatementProcedure();
                 n++;
             }
+            grammarRules.add("Statement -> 'if' Expression 'then' Statement ('else' Statement)?");
             buildTree("if", n);
         } else if (Objects.equals(nextToken().value, "while")) {
             readToken(TokenType.Predefined_Keyword, "while");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Keyword, "do");
             StatementProcedure();
+            grammarRules.add("Statement -> 'while' Expression 'do' Statement");
             buildTree("while", 2);
         } else if (Objects.equals(nextToken().value, "repeat")) {
             readToken(TokenType.Predefined_Keyword, "repeat");
@@ -269,6 +293,7 @@ class Parser {
             }
             readToken(TokenType.Predefined_Keyword, "until");
             ExpressionProcedure();
+            grammarRules.add("Statement -> 'repeat' Statement list ';' 'until' Expression");
             buildTree("repeat", n + 1);
         } else if (Objects.equals(nextToken().value, "for")) {
             readToken(TokenType.Predefined_Keyword, "for");
@@ -280,6 +305,7 @@ class Parser {
             ForStatProcedure();
             readToken(TokenType.Predefined_Operator, ")");
             StatementProcedure();
+            grammarRules.add("Statement -> 'for' '(' ForStat ';' ForExp ';' ForStat ')' Statement");
             buildTree("for", 4);
         } else if (Objects.equals(nextToken().value, "loop")) {
             readToken(TokenType.Predefined_Keyword, "loop");
@@ -291,6 +317,7 @@ class Parser {
                 n++;
             }
             readToken(TokenType.Predefined_Keyword, "pool");
+            grammarRules.add("Statement -> 'loop' Statement list ';' 'pool'");
             buildTree("loop", n);
         } else if (Objects.equals(nextToken().value, "case")) {
             readToken(TokenType.Predefined_Keyword, "case");
@@ -299,6 +326,7 @@ class Parser {
             int caseCount = CaseclausesProcedure();
             int otherwise = OtherwiseClauseProcedure();
             readToken(TokenType.Predefined_Keyword, "end");
+            grammarRules.add("Statement -> 'case' Expression 'of' Caseclauses OtherwiseClause 'end'");
             buildTree("case", 1 + caseCount + otherwise);
         } else if (Objects.equals(nextToken().value, "read")) {
             readToken(TokenType.Predefined_Keyword, "read");
@@ -311,17 +339,22 @@ class Parser {
                 n++;
             }
             readToken(TokenType.Predefined_Operator, ")");
+            grammarRules.add("Statement -> 'read' '(' Name list ',' ')'");
             buildTree("read", n);
         } else if (Objects.equals(nextToken().value, "exit")) {
             readToken(TokenType.Predefined_Keyword, "exit");
+            grammarRules.add("Statement -> 'exit'");
             buildTree("exit", 0);
         } else if (Objects.equals(nextToken().value, "return")) {
             readToken(TokenType.Predefined_Keyword, "return");
             ExpressionProcedure();
+            grammarRules.add("Statement -> 'return' Expression");
             buildTree("return", 1);
         } else if (Objects.equals(nextToken().value, "begin")) {
             BodyProcedure();
+//            grammarRules.add("Statement -> Body");
         } else {
+            grammarRules.add("Statement -> ");
             buildTree("<null>", 0);
         }
     }
@@ -331,12 +364,14 @@ class Parser {
             System.out.println("\033[33;0m" + "OutExp" + "\033[0m");
         if (nextToken().type == TokenType.String) {
             StringNodeProcedure();
+            grammarRules.add("OutExp -> StringNode");
             buildTree("string", 1);
         } else if (nextToken().type == TokenType.Identifier || nextToken().type == TokenType.Char
                 || nextToken().type == TokenType.Integer ||
                 new ArrayList<>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord"))
                         .contains(nextToken().value)) {
             ExpressionProcedure();
+            grammarRules.add("OutExp -> Expression");
             buildTree("integer", 1);
         } else {
             throw new ParserException("");
@@ -347,6 +382,7 @@ class Parser {
         if (debugProcedures)
             System.out.println("\033[33;0m" + "StringNode" + "\033[0m");
         readToken(TokenType.String);
+//        grammarRules.add("StringNode -> '<string>';");
     }
 
     private int CaseclausesProcedure() throws ParserException {
@@ -355,6 +391,7 @@ class Parser {
         CaseClauseProcedure();
         int m = 1;
         readToken(TokenType.Predefined_Operator, ";");
+//        grammarRules.add("Caseclauses-> (Caseclause ';')+");
         while (nextToken().type == TokenType.Integer || nextToken().type == TokenType.Char
                 || nextToken().type == TokenType.Identifier) {
             CaseClauseProcedure();
@@ -376,6 +413,7 @@ class Parser {
         }
         readToken(TokenType.Predefined_Operator, ":");
         StatementProcedure();
+        grammarRules.add("Caseclause -> CaseExpression list ',' ':' Statement => \"case_clause\"");
         buildTree("case_clause", n + 1);
     }
 
@@ -386,7 +424,10 @@ class Parser {
         if (Objects.equals(nextToken().value, "..")) {
             readToken(TokenType.Predefined_Operator, "..");
             ConstValueProcedure();
+            grammarRules.add("CaseExpression -> ConstValue '..' ConstValue");
             buildTree("..", 2);
+        }else{
+//            grammarRules.add("CaseExpression -> ConstValue");
         }
     }
 
@@ -398,7 +439,10 @@ class Parser {
             readToken(TokenType.Predefined_Keyword, "otherwise");
             StatementProcedure();
             m++;
+            grammarRules.add("OtherwiseClause -> 'otherwise' Statement");
             buildTree("otherwise", 1);
+        }else {
+//            grammarRules.add("OtherwiseClause -> ");
         }
         return m;
     }
@@ -410,10 +454,12 @@ class Parser {
         if (Objects.equals(nextToken().value, ":=")) {
             readToken(TokenType.Predefined_Operator, ":=");
             ExpressionProcedure();
+            grammarRules.add("Assignment -> Name ':=' Expression");
             buildTree("assign", 2);
         } else if (Objects.equals(nextToken().value, ":=:")) {
             readToken(TokenType.Predefined_Operator, ":=:");
             NameProcedure();
+            grammarRules.add("Assignment -> Name ':=:' Name");
             buildTree("swap", 2);
         } else {
             throw new ParserException("");
@@ -425,7 +471,9 @@ class Parser {
             System.out.println("\033[33;0m" + "ForStat" + "\033[0m");
         if (nextToken().type == TokenType.Identifier) {
             AssignmentProcedure();
+//            grammarRules.add("ForStat -> Assignment");
         } else {
+            grammarRules.add("ForStat -> ");
             buildTree("<null>", 0);
         }
     }
@@ -438,7 +486,9 @@ class Parser {
                 new ArrayList<>(Arrays.asList("+", "-", "(", "not", "eof", "succ", "pred", "chr", "ord"))
                         .contains(nextToken().value)) {
             ExpressionProcedure();
+//            grammarRules.add("ForExp -> Expression");
         } else {
+            grammarRules.add("ForExp -> ");
             buildTree("true", 0);
         }
     }
@@ -450,27 +500,35 @@ class Parser {
         if (Objects.equals(nextToken().value, "<=")) {
             readToken(TokenType.Predefined_Operator, "<=");
             TermProcedure();
+            grammarRules.add("Expression -> Term '<=' Term");
             buildTree("<=", 2);
         } else if (Objects.equals(nextToken().value, "<")) {
             readToken(TokenType.Predefined_Operator, "<");
             TermProcedure();
+            grammarRules.add("Expression -> Term '<' Term");
             buildTree("<", 2);
         } else if (Objects.equals(nextToken().value, ">=")) {
             readToken(TokenType.Predefined_Operator, ">=");
             TermProcedure();
+            grammarRules.add("Expression -> Term '>=' Term");
             buildTree(">=", 2);
         } else if (Objects.equals(nextToken().value, ">")) {
             readToken(TokenType.Predefined_Operator, ">");
             TermProcedure();
+            grammarRules.add("Expression -> Term '>' Term");
             buildTree(">", 2);
         } else if (Objects.equals(nextToken().value, "=")) {
             readToken(TokenType.Predefined_Operator, "=");
             TermProcedure();
+            grammarRules.add("Expression -> Term '=' Term");
             buildTree("=", 2);
         } else if (Objects.equals(nextToken().value, "<>")) {
             readToken(TokenType.Predefined_Operator, "<>");
             TermProcedure();
+            grammarRules.add("Expression -> Term '<>' Term");
             buildTree("<>", 2);
+        } else{
+//            grammarRules.add("Expression -> Term");
         }
     }
 
@@ -482,15 +540,20 @@ class Parser {
             if (Objects.equals(nextToken().value, "+")) {
                 readToken(TokenType.Predefined_Operator, "+");
                 FactorProcedure();
+                grammarRules.add("Term -> Term '+' Factor");
                 buildTree("+", 2);
             } else if (Objects.equals(nextToken().value, "-")) {
                 readToken(TokenType.Predefined_Operator, "-");
                 FactorProcedure();
+                grammarRules.add("Term -> Term '-' Factor");
                 buildTree("-", 2);
             } else if (Objects.equals(nextToken().value, "or")) {
                 readToken(TokenType.Predefined_Keyword, "or");
                 FactorProcedure();
+                grammarRules.add("Term -> Term 'or' Factor");
                 buildTree("or", 2);
+            } else{
+//                grammarRules.add("Term -> Factor");
             }
         }
     }
@@ -503,19 +566,25 @@ class Parser {
             if (Objects.equals(nextToken().value, "*")) {
                 readToken(TokenType.Predefined_Operator, "*");
                 PrimaryProcedure();
+                grammarRules.add("Factor -> Factor '*' Primary");
                 buildTree("*", 2);
             } else if (Objects.equals(nextToken().value, "/")) {
                 readToken(TokenType.Predefined_Operator, "/");
                 PrimaryProcedure();
+                grammarRules.add("Factor -> Factor '/' Primary");
                 buildTree("/", 2);
             } else if (Objects.equals(nextToken().value, "and")) {
                 readToken(TokenType.Predefined_Keyword, "and");
                 PrimaryProcedure();
+                grammarRules.add("Factor -> Factor 'and' Primary");
                 buildTree("and", 2);
             } else if (Objects.equals(nextToken().value, "mod")) {
                 readToken(TokenType.Predefined_Keyword, "mod");
                 PrimaryProcedure();
+                grammarRules.add("Factor -> Factor 'mod' Primary");
                 buildTree("mod", 2);
+            }else{
+//                grammarRules.add("Factor -> Primary");
             }
         }
     }
@@ -525,21 +594,27 @@ class Parser {
             System.out.println("\033[33;0m" + "Primary" + "\033[0m");
         if (nextToken().type == TokenType.Integer) {
             readToken(TokenType.Integer);
+//            grammarRules.add("Primary -> '<integer>'");
         } else if (nextToken().type == TokenType.Char) {
             readToken(TokenType.Char);
+//            grammarRules.add("Primary -> '<char>'");
         } else if (Objects.equals(nextToken().value, "-")) {
             readToken(TokenType.Predefined_Operator, "-");
             PrimaryProcedure();
+            grammarRules.add("Primary -> '-' Primary");
             buildTree("-", 1);
         } else if (Objects.equals(nextToken().value, "+")) {
             readToken(TokenType.Predefined_Operator, "+");
             PrimaryProcedure();
+//            grammarRules.add("Primary -> '+' Primary");
         } else if (Objects.equals(nextToken().value, "not")) {
             readToken(TokenType.Predefined_Keyword, "not");
             PrimaryProcedure();
+            grammarRules.add("Primary -> 'not' Primary");
             buildTree("not", 1);
         } else if (Objects.equals(nextToken().value, "eof")) {
             readToken(TokenType.Predefined_Keyword, "eof");
+            grammarRules.add("Primary -> 'eof'");
             buildTree("eof", 0);
         } else if (nextToken().type == TokenType.Identifier) {
             NameProcedure();
@@ -554,35 +629,43 @@ class Parser {
                     n++;
                 }
                 readToken(TokenType.Predefined_Operator, ")");
+                grammarRules.add("Primary -> Name '(' Expression list ',' ')'");
                 buildTree("call", n);
+            }else{
+//                grammarRules.add("Primary -> Name");
             }
         } else if (Objects.equals(nextToken().value, "(")) {
             readToken(TokenType.Predefined_Operator, "(");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Operator, ")");
+//            grammarRules.add("Primary -> '(' Expression ')'");
         } else if (Objects.equals(nextToken().value, "succ")) {
             readToken(TokenType.Predefined_Keyword, "succ");
             readToken(TokenType.Predefined_Operator, "(");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Operator, ")");
+            grammarRules.add("'succ' '(' Expression ')'");
             buildTree("succ", 1);
         } else if (Objects.equals(nextToken().value, "pred")) {
             readToken(TokenType.Predefined_Keyword, "pred");
             readToken(TokenType.Predefined_Operator, "(");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Operator, ")");
+            grammarRules.add("'pred' '(' Expression ')'");
             buildTree("pred", 1);
         } else if (Objects.equals(nextToken().value, "chr")) {
             readToken(TokenType.Predefined_Keyword, "chr");
             readToken(TokenType.Predefined_Operator, "(");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Operator, ")");
+            grammarRules.add("'chr' '(' Expression ')'");
             buildTree("chr", 1);
         } else if (Objects.equals(nextToken().value, "ord")) {
             readToken(TokenType.Predefined_Keyword, "ord");
             readToken(TokenType.Predefined_Operator, "(");
             ExpressionProcedure();
             readToken(TokenType.Predefined_Operator, ")");
+            grammarRules.add("'ord' '(' Expression ')'");
             buildTree("ord", 1);
         } else {
             throw new ParserException("");
@@ -594,6 +677,7 @@ class Parser {
             System.out.println("\033[33;0m" + "Name" + "\033[0m");
         if (nextToken().type == TokenType.Identifier) {
             readToken(TokenType.Identifier);
+//            grammarRules.add("Name -> '<identifier>'");
         } else {
             throw new ParserException("");
         }
