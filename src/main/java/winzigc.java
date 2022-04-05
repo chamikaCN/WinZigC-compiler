@@ -13,8 +13,10 @@ public class winzigc {
         LexScanner scanner = new LexScanner();
         ArrayList<Token> tokens = scanner.tokenize(input);
         Parser parser = new Parser();
-        parser.parse(tokens);
+        Node root = parser.parse(tokens);
         parser.visualizeTree();
+        CodeGenerator codeGenerator = new CodeGenerator();
+        codeGenerator.initialize(root);
     }
 
     private static String readFile(String path) {
