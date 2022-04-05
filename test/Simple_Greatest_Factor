@@ -7,7 +7,9 @@ var
 begin
 
 	read(num);
-	for (i := num; i = 1; i:=i-1)
-    	    if num mod i = 0 then output ( i )
+	i := num;
+	while (i >= 1)
+	do
+    	    if num mod i = 0 then output ( i ) else i := i - 1
 
 end greatestFactor.
