@@ -9,19 +9,22 @@ class Parser {
     private boolean debugProcedures = true;
     private Stack<Node> treeNodes = new Stack<>();
     private Set<String> grammarRules = new HashSet<>();
+    private Node finalRootNode;
 
-    void parse(ArrayList<Token> t) {
+    Node parse(ArrayList<Token> t) {
         tokens = (ArrayList<Token>) t.clone();
         try {
             WinzigProcedure();
-            System.out.println("rules :"+ grammarRules.size());
-            for (String s: grammarRules) {
+            finalRootNode = treeNodes.pop();
+            System.out.println("rules :" + grammarRules.size());
+            for (String s : grammarRules) {
                 System.out.println(s);
             }
         } catch (ParserException e) {
             System.out.println(nextToken().type + " : " + nextToken().value);
             e.printStackTrace();
         }
+        return finalRootNode;
     }
 
     private void WinzigProcedure() throws ParserException {
@@ -426,7 +429,7 @@ class Parser {
             ConstValueProcedure();
             grammarRules.add("CaseExpression -> ConstValue '..' ConstValue");
             buildTree("..", 2);
-        }else{
+        } else {
 //            grammarRules.add("CaseExpression -> ConstValue");
         }
     }
@@ -441,7 +444,7 @@ class Parser {
             m++;
             grammarRules.add("OtherwiseClause -> 'otherwise' Statement");
             buildTree("otherwise", 1);
-        }else {
+        } else {
 //            grammarRules.add("OtherwiseClause -> ");
         }
         return m;
@@ -527,7 +530,7 @@ class Parser {
             TermProcedure();
             grammarRules.add("Expression -> Term '<>' Term");
             buildTree("<>", 2);
-        } else{
+        } else {
 //            grammarRules.add("Expression -> Term");
         }
     }
@@ -552,7 +555,7 @@ class Parser {
                 FactorProcedure();
                 grammarRules.add("Term -> Term 'or' Factor");
                 buildTree("or", 2);
-            } else{
+            } else {
 //                grammarRules.add("Term -> Factor");
             }
         }
@@ -583,7 +586,7 @@ class Parser {
                 PrimaryProcedure();
                 grammarRules.add("Factor -> Factor 'mod' Primary");
                 buildTree("mod", 2);
-            }else{
+            } else {
 //                grammarRules.add("Factor -> Primary");
             }
         }
@@ -631,7 +634,7 @@ class Parser {
                 readToken(TokenType.Predefined_Operator, ")");
                 grammarRules.add("Primary -> Name '(' Expression list ',' ')'");
                 buildTree("call", n);
-            }else{
+            } else {
 //                grammarRules.add("Primary -> Name");
             }
         } else if (Objects.equals(nextToken().value, "(")) {
@@ -760,13 +763,13 @@ class Parser {
 
     public void visualizeTree() {
         if (debugProcedures) {
-            int size = treeNodes.size();
-            System.out.println("Number of nodes in Stack : " + treeNodes.size());
+            int size = treeNodes.size() + 1;
+            System.out.println("Number of nodes in Stack : " + (treeNodes.size() + 1));
             for (int i = 0; i < size; i++) {
-                visit(treeNodes.pop(), 0);
+                visit(finalRootNode, 0);
             }
         } else {
-            visit(treeNodes.pop(), 0);
+            visit(finalRootNode, 0);
         }
     }
 
@@ -774,7 +777,7 @@ class Parser {
         try {
             File file = new File(filePath);
             BufferedWriter output = new BufferedWriter(new FileWriter(file));
-            visit(treeNodes.pop(), 0);
+            visit(finalRootNode, 0);
             output.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -783,8 +786,6 @@ class Parser {
     }
 
     private void visit(Node n, int level) {
-        // fw.write(n.visualize(level));
-        // fw.newLine();
         System.out.println(n.visualize(level));
         if (n.left != null) {
             visit(n.left, level + 1);
