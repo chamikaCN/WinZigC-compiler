@@ -1,0 +1,10 @@
+program minimum:
+
+var
+    num : integer;
+
+begin
+
+    num := 25 - 3
+
+end minimum.
