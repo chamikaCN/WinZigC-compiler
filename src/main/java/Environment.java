@@ -3,7 +3,6 @@ package main.java;
 import java.util.HashMap;
 
 public class Environment {
-    static int counter = 2;
     HashMap<String, Integer> localLookupTable = null;
     HashMap<String, VariableType> localVariableTypes = null;
     String envName;
@@ -11,18 +10,16 @@ public class Environment {
     Environment functionParent = null;
     boolean isFunction;
 
-    public Environment(int sb){
-        envName = "L"+counter;
-        counter++;
+    public Environment(int sb, int envNumber){
+        envName = "L"+envNumber;
         functionParent = this;
         localLookupTable = new HashMap<>();
         localVariableTypes = new HashMap<>();
         stackBottom = sb;
     }
 
-    public Environment(int sb, Environment funcPar){
-        envName = "L"+counter;
-        counter++;
+    public Environment(int sb, int envNumber, Environment funcPar){
+        envName = "L"+envNumber;
         stackBottom = sb;
         functionParent = funcPar;
         if(functionParent != null) {
