@@ -7,11 +7,11 @@ class Node {
     final String name;
     final Node left;
     Node right;
-    private int num;
+    int childrenCount;
 
     Node(String name, Node l, Node r, int num) {
         this.name = name;
-        this.num = num;
+        this.childrenCount = num;
         left = l;
         right = r;
     }
@@ -24,7 +24,19 @@ class Node {
             sb.append(" ");
         }
         sb.append(name);
-        sb.append("(").append(num).append(")");
+        sb.append("(").append(childrenCount).append(")");
         return sb.toString();
+    }
+
+    Node getChild(int index){
+        if(index == 0){
+            return this.left;
+        }else{
+            Node n = this.left;
+            for (int i = 1; i <= index; i++) {
+                n = n.right;
+            }
+            return n;
+        }
     }
 }
