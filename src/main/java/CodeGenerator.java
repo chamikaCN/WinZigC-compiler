@@ -1,5 +1,7 @@
 package main.java;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,7 +13,9 @@ public class CodeGenerator {
     private HashMap<String, Integer> globalLookupTable = new HashMap<>();
     private HashMap<String, VariableType> globalVariableTypes = new HashMap<>();
     private HashMap<String, Environment> environments = new HashMap<>();
-    private String prevEnvName="global";
+    private String environmentName = "global";
+    private int environmentCounter = 1;
+    private String prevEnvName = "";
 
     void initialize(Node r) {
         rootNode = r;
@@ -27,14 +31,25 @@ public class CodeGenerator {
     }
 
     private Environment createConditionalEnvironment(int stackBottom, Environment functionalParent) {
-        Environment env = new Environment(stackBottom, functionalParent);
+        Environment env = new Environment(stackBottom, environmentCounter, functionalParent);
+        environmentCounter++;
         return env;
     }
 
     private Environment createFunctionalEnvironment(int stackBottom) {
-        Environment env = new Environment(stackBottom);
+        Environment env = new Environment(stackBottom, environmentCounter);
+        environmentCounter++;
         return env;
     }
+
+    private void updateEnvironmentName(Environment currentEnv, int newNumber) {
+        if (currentEnv == null) {
+            environmentName = "L" + newNumber;
+        } else {
+            currentEnv.envName = "L" + newNumber;
+        }
+    }
+
 
     private boolean isIdentifierValid(String identifier, Environment env) {
         if (env == null) {
@@ -46,9 +61,9 @@ public class CodeGenerator {
 
     private String generateLoadIdentifierLine(String identifier, Environment env) {
         if ((env != null && env.functionParent != null) && env.localLookupTable.containsKey(identifier)) {
-            return "LLV " + env.localLookupTable.get(identifier);
+            return "LLV\t" + env.localLookupTable.get(identifier);
         } else if (globalLookupTable.containsKey(identifier)) {
-            return "LGV " + globalLookupTable.get(identifier);
+            return "LGV\t" + globalLookupTable.get(identifier);
         } else {
             return "ERROR";
         }
@@ -56,9 +71,9 @@ public class CodeGenerator {
 
     private String generateReassignIdentifierLine(String identifier, Environment env) {
         if ((env != null && env.functionParent != null) && env.localLookupTable.containsKey(identifier)) {
-            return "SLV " + env.localLookupTable.get(identifier);
+            return "SLV\t" + env.localLookupTable.get(identifier);
         } else if (globalLookupTable.containsKey(identifier)) {
-            return "SGV " + globalLookupTable.get(identifier);
+            return "SGV\t" + globalLookupTable.get(identifier);
         } else {
             return "ERROR";
         }
@@ -68,11 +83,11 @@ public class CodeGenerator {
         if ((env != null && env.functionParent != null) && !env.localLookupTable.containsKey(identifier)) {
             env.localLookupTable.put(identifier, stackPointer);
             env.localVariableTypes.put(identifier, type);
-            return "LIT 0";
+            return "LIT\t0";
         } else if (!globalLookupTable.containsKey(identifier)) {
             globalLookupTable.put(identifier, stackPointer);
             globalVariableTypes.put(identifier, type);
-            return "LIT 0";
+            return "LIT\t0";
         } else {
             return "ERROR";
         }
@@ -112,14 +127,37 @@ public class CodeGenerator {
     }
 
     private void generateCode(String codeLine, Environment currentEnvironment) {
-        String env = "\t";
+        String env = "";
         if (currentEnvironment != null) {
             env = currentEnvironment.envName;
+        } else {
+            env = environmentName;
         }
         if (prevEnvName.equals(env)) {
-            code.add("\t " + codeLine);
+            code.add("\t" + codeLine);
+        } else if(!env.equals("global")){
+            code.add(env + "\t" + codeLine);
+            prevEnvName = env;
+        } else{
+            code.add("\t" + codeLine);
+            prevEnvName = env;
+        }
+    }
+
+    private void generateCode(String op, String operand, Environment currentEnvironment) {
+        String env = "";
+        if (currentEnvironment != null) {
+            env = currentEnvironment.envName;
         } else {
-            code.add(env + " " + codeLine);
+            env = environmentName;
+        }
+        if (prevEnvName.equals(env)) {
+            code.add("\t" + op + "\t" + operand);
+        } else if(!env.equals("global")){
+            code.add(env + "\t" + op + "\t" + operand);
+            prevEnvName = env;
+        }else{
+            code.add("\t" + op + "\t" + operand);
             prevEnvName = env;
         }
     }
@@ -144,8 +182,8 @@ public class CodeGenerator {
                 return gteHandler(node, attr, currentEnvironment);
             case "integer":
                 return integerHandler(node, attr, currentEnvironment);
-//            case "if":
-//                return ifHandler(node, attr, currentEnvironment);
+            case "if":
+                return ifHandler(node, attr, currentEnvironment);
 //            case "while":
 //                return whileHandler(node, attr, currentEnvironment);
             case "output":
@@ -212,11 +250,11 @@ public class CodeGenerator {
     //===================== SUPPORTIVE NODES ========================
 
     private AttributePanel integerHandler(Node n, AttributePanel parentAttr, Environment env) {
-        AttributePanel expAttr = Evaluate(n.getChild(0),parentAttr,env);
-        if(expAttr.variableType != VariableType.Integer){
+        AttributePanel expAttr = Evaluate(n.getChild(0), parentAttr, env);
+        if (expAttr.variableType != VariableType.Integer) {
             errors.add("IntergerNode child type not Integer");
             return new AttributePanel(expAttr.stackSize, VariableType.Undecided);
-        }else{
+        } else {
             return new AttributePanel(expAttr.stackSize, VariableType.Integer);
         }
     }
@@ -262,7 +300,28 @@ public class CodeGenerator {
     //================= STATEMENT NODES ======================
 
     private AttributePanel ifHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return null;
+        AttributePanel expAttr = Evaluate(n.getChild(0), parentAttr, env);
+        if (expAttr.variableType == VariableType.Boolean) {
+            Environment thenEnv = createConditionalEnvironment(expAttr.stackSize, env != null? env.functionParent: null);
+            Environment elseEnv = createConditionalEnvironment(expAttr.stackSize, env != null? env.functionParent: null);
+            generateCode("COND\t" + thenEnv.envName + "\t" + elseEnv.envName, env);
+            AttributePanel thenAttr = Evaluate(n.getChild(1), expAttr, thenEnv);
+            updateEnvironmentName(env,environmentCounter);
+            generateCode("GOTO", "L" + environmentCounter, thenEnv);
+            environmentCounter++;
+            AttributePanel elseAttr;
+            if (n.childrenCount > 2) {
+                elseAttr = Evaluate(n.getChild(2), thenAttr, elseEnv);
+            } else {
+                generateCode("NOP", elseEnv);
+                elseAttr = new AttributePanel(thenAttr.stackSize, thenAttr.variableType);
+            }
+            generateCode("NOP", env);
+            return elseAttr;
+        } else {
+            errors.add("IF expression does not return a boolean value");
+            return new AttributePanel(expAttr.stackSize, VariableType.Undecided);
+        }
     }
 
     private AttributePanel whileHandler(Node n, AttributePanel parentAttr, Environment env) {
@@ -272,10 +331,10 @@ public class CodeGenerator {
     private AttributePanel outputHandler(Node n, AttributePanel parentAttr, Environment env) {
         AttributePanel attr = parentAttr;
         for (int i = 0; i < n.childrenCount; i++) {
-            attr = Evaluate(n.getChild(i),attr,env);
-            generateCode("SOS OUTPUT",env);
-            generateCode("SOS OUTPUTL", env);
-            attr = new AttributePanel(attr.stackSize-1, attr.variableType);
+            attr = Evaluate(n.getChild(i), attr, env);
+            generateCode("SOS", "OUTPUT", env);
+            generateCode("SOS", "OUTPUTL", env);
+            attr = new AttributePanel(attr.stackSize - 1, attr.variableType);
         }
         return attr;
     }
@@ -283,7 +342,7 @@ public class CodeGenerator {
     private AttributePanel readHandler(Node n, AttributePanel parentAttr, Environment env) {
         AttributePanel attr = parentAttr;
         for (int i = 0; i < n.childrenCount; i++) {
-            generateCode("SOS INPUT", env);
+            generateCode("SOS", "INPUT", env);
             int identifierIndex = retrieveIdentifierIndex(n.getChild(i).getChild(0).name, env);
             VariableType type = retrieveVariableType(n.getChild(i).getChild(0).name, env);
             if (identifierIndex < 0) {
@@ -304,7 +363,7 @@ public class CodeGenerator {
         AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
         AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
         if (leftAttr.variableType == rightAttr.variableType) {
-            generateCode("BOP BEQ", env);
+            generateCode("BOP", "BEQ", env);
             return new AttributePanel(rightAttr.stackSize - 1, VariableType.Boolean);
         } else {
             errors.add("EQUAL values cannot be different typed");
@@ -316,7 +375,7 @@ public class CodeGenerator {
         AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
         AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
         if (leftAttr.variableType == rightAttr.variableType) {
-            generateCode("BOP BGE", env);
+            generateCode("BOP", "BGE", env);
             return new AttributePanel(rightAttr.stackSize - 1, VariableType.Boolean);
         } else {
             errors.add("GTorEQ values cannot be different typed");
@@ -331,7 +390,7 @@ public class CodeGenerator {
         AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
         AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
         if (leftAttr.variableType == VariableType.Integer && rightAttr.variableType == VariableType.Integer) {
-            generateCode("BOP BMOD", env);
+            generateCode("BOP", "BMOD", env);
             return new AttributePanel(rightAttr.stackSize - 1, VariableType.Integer);
         } else {
             errors.add("MOD non-integer values cannot be modulated");
@@ -343,7 +402,7 @@ public class CodeGenerator {
         AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
         AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
         if (leftAttr.variableType == VariableType.Integer && rightAttr.variableType == VariableType.Integer) {
-            generateCode("BOP BMINUS", env);
+            generateCode("BOP", "BMINUS", env);
             return new AttributePanel(rightAttr.stackSize - 1, VariableType.Integer);
         } else {
             errors.add("MINUS non-integer values cannot be subtracted");
@@ -355,7 +414,7 @@ public class CodeGenerator {
     //=================== LEAF NODES =======================
 
     private AttributePanel _integer_Handler(Node n, AttributePanel parentAttr, Environment env) {
-        generateCode("LIT " + n.getChild(0).name, env);
+        generateCode("LIT", n.getChild(0).name, env);
         return new AttributePanel(parentAttr.stackSize + 1, VariableType.Integer);
     }
 
