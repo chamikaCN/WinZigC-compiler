@@ -1,5 +1,5 @@
 package main.java;
 
 public enum VariableType {
-    Integer, Char, String, Undecided
+    Integer, Char, String, Undecided, Boolean
 }
