@@ -135,10 +135,10 @@ public class CodeGenerator {
         }
         if (prevEnvName.equals(env)) {
             code.add("\t" + codeLine);
-        } else if(!env.equals("global")){
+        } else if (!env.equals("global")) {
             code.add(env + "\t" + codeLine);
             prevEnvName = env;
-        } else{
+        } else {
             code.add("\t" + codeLine);
             prevEnvName = env;
         }
@@ -153,10 +153,10 @@ public class CodeGenerator {
         }
         if (prevEnvName.equals(env)) {
             code.add("\t" + op + "\t" + operand);
-        } else if(!env.equals("global")){
+        } else if (!env.equals("global")) {
             code.add(env + "\t" + op + "\t" + operand);
             prevEnvName = env;
-        }else{
+        } else {
             code.add("\t" + op + "\t" + operand);
             prevEnvName = env;
         }
@@ -168,30 +168,56 @@ public class CodeGenerator {
                 return _integer_Handler(node, attr, currentEnvironment);
             case "<identifier>":
                 return _identifier_Handler(node, attr, currentEnvironment);
+            case "+":
+                return plusHandler(node, attr, currentEnvironment);
             case "-":
-                return minusHandler(node, attr, currentEnvironment);
+                if (node.childrenCount == 1) {
+                    return negHandler(node, attr, currentEnvironment);
+                } else {
+                    return minusHandler(node, attr, currentEnvironment);
+                }
+            case "*":
+                return multiHandler(node, attr, currentEnvironment);
+            case "/":
+                return divHandler(node, attr, currentEnvironment);
+            case "mod":
+                return modHandler(node, attr, currentEnvironment);
+            case "and":
+                return andHandler(node, attr, currentEnvironment);
+            case "or":
+                return orHandler(node, attr, currentEnvironment);
+            case "succ":
+                return succHandler(node, attr, currentEnvironment);
+            case "pred":
+                return predHandler(node, attr, currentEnvironment);
+            case "=":
+                return equalHandler(node, attr, currentEnvironment);
+            case "<>":
+                return neqHandler(node, attr, currentEnvironment);
+            case ">":
+                return grtHandler(node, attr, currentEnvironment);
+            case "<":
+                return lstHandler(node, attr, currentEnvironment);
+            case ">=":
+                return gteHandler(node, attr, currentEnvironment);
+            case "<=":
+                return lteHandler(node, attr, currentEnvironment);
             case "assign":
                 return assignHandler(node, attr, currentEnvironment);
             case "var":
                 return varHandler(node, attr, currentEnvironment);
-            case "mod":
-                return modHandler(node, attr, currentEnvironment);
-            case "=":
-                return equalHandler(node, attr, currentEnvironment);
-            case ">=":
-                return gteHandler(node, attr, currentEnvironment);
             case "integer":
                 return integerHandler(node, attr, currentEnvironment);
             case "if":
                 return ifHandler(node, attr, currentEnvironment);
-//            case "while":
-//                return whileHandler(node, attr, currentEnvironment);
+            case "while":
+                return whileHandler(node, attr, currentEnvironment);
             case "output":
                 return outputHandler(node, attr, currentEnvironment);
             case "read":
                 return readHandler(node, attr, currentEnvironment);
-//            case "block":
-//                return blockHandler(node, attr, currentEnvironment);
+            case "block":
+                return blockHandler(node, attr, currentEnvironment);
 //            case "subprogs":
 //                return subprogsHandler(node, attr, currentEnvironment);
 //            case "dclns":
@@ -260,7 +286,7 @@ public class CodeGenerator {
     }
 
     private AttributePanel blockHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return null;
+        return defaultHandler(n, parentAttr, env);
     }
 
     private AttributePanel varHandler(Node n, AttributePanel parentAttr, Environment env) {
@@ -302,11 +328,11 @@ public class CodeGenerator {
     private AttributePanel ifHandler(Node n, AttributePanel parentAttr, Environment env) {
         AttributePanel expAttr = Evaluate(n.getChild(0), parentAttr, env);
         if (expAttr.variableType == VariableType.Boolean) {
-            Environment thenEnv = createConditionalEnvironment(expAttr.stackSize, env != null? env.functionParent: null);
-            Environment elseEnv = createConditionalEnvironment(expAttr.stackSize, env != null? env.functionParent: null);
+            Environment thenEnv = createConditionalEnvironment(expAttr.stackSize, env != null ? env.functionParent : null);
+            Environment elseEnv = createConditionalEnvironment(expAttr.stackSize, env != null ? env.functionParent : null);
             generateCode("COND\t" + thenEnv.envName + "\t" + elseEnv.envName, env);
             AttributePanel thenAttr = Evaluate(n.getChild(1), expAttr, thenEnv);
-            updateEnvironmentName(env,environmentCounter);
+            updateEnvironmentName(env, environmentCounter);
             generateCode("GOTO", "L" + environmentCounter, thenEnv);
             environmentCounter++;
             AttributePanel elseAttr;
@@ -325,7 +351,20 @@ public class CodeGenerator {
     }
 
     private AttributePanel whileHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return null;
+//        int returningEnvNum = environmentCounter;
+//        environmentCounter++;
+        Environment expEnv = createConditionalEnvironment(parentAttr.stackSize, env != null ? env.functionParent : null);
+        AttributePanel expAttr = Evaluate(n.getChild(0), parentAttr, expEnv);
+        Environment doEnv = createConditionalEnvironment(expAttr.stackSize, env != null ? env.functionParent : null);
+        Environment elseEnv = createConditionalEnvironment(expAttr.stackSize, env != null ? env.functionParent : null);
+        generateCode("COND\t" + doEnv.envName + "\t" + elseEnv.envName, expEnv);
+        AttributePanel doAttr = Evaluate(n.getChild(1), expAttr, doEnv);
+        generateCode("GOTO", expEnv.envName, doEnv);
+//        updateEnvironmentName(env, returningEnvNum);
+        generateCode("NOP", elseEnv);
+        AttributePanel elseAttr = new AttributePanel(doAttr.stackSize, doAttr.variableType);
+//        generateCode("NOP", env);
+        return elseAttr;
     }
 
     private AttributePanel outputHandler(Node n, AttributePanel parentAttr, Environment env) {
@@ -371,6 +410,42 @@ public class CodeGenerator {
         }
     }
 
+    private AttributePanel neqHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == rightAttr.variableType) {
+            generateCode("BOP", "BNE", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Boolean);
+        } else {
+            errors.add("NOT EQUAL values cannot be different typed");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel grtHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == rightAttr.variableType) {
+            generateCode("BOP", "BGT", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Boolean);
+        } else {
+            errors.add("GREATER values cannot be different typed");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel lstHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == rightAttr.variableType) {
+            generateCode("BOP", "BLT", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Boolean);
+        } else {
+            errors.add("LESS values cannot be different typed");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
     private AttributePanel gteHandler(Node n, AttributePanel parentAttr, Environment env) {
         AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
         AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
@@ -383,17 +458,29 @@ public class CodeGenerator {
         }
     }
 
+    private AttributePanel lteHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == rightAttr.variableType) {
+            generateCode("BOP", "BLE", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Boolean);
+        } else {
+            errors.add("LSorEQ values cannot be different typed");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
 
     //================== ARITHMETIC NODES =====================
 
-    private AttributePanel modHandler(Node n, AttributePanel parentAttr, Environment env) {
+    private AttributePanel plusHandler(Node n, AttributePanel parentAttr, Environment env) {
         AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
         AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
         if (leftAttr.variableType == VariableType.Integer && rightAttr.variableType == VariableType.Integer) {
-            generateCode("BOP", "BMOD", env);
+            generateCode("BOP", "BPLUS", env);
             return new AttributePanel(rightAttr.stackSize - 1, VariableType.Integer);
         } else {
-            errors.add("MOD non-integer values cannot be modulated");
+            errors.add("PLUS non-integer values cannot be added");
             return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
         }
     }
@@ -407,6 +494,116 @@ public class CodeGenerator {
         } else {
             errors.add("MINUS non-integer values cannot be subtracted");
             return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel multiHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == VariableType.Integer && rightAttr.variableType == VariableType.Integer) {
+            generateCode("BOP", "BMULT", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Integer);
+        } else {
+            errors.add("MULTI non-integer values cannot be multiplied");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel divHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == VariableType.Integer && rightAttr.variableType == VariableType.Integer) {
+            generateCode("BOP", "BDIV", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Integer);
+        } else {
+            errors.add("DIV non-integer values cannot be divided");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel modHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == VariableType.Integer && rightAttr.variableType == VariableType.Integer) {
+            generateCode("BOP", "BMOD", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Integer);
+        } else {
+            errors.add("MOD non-integer values cannot be modulated");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+
+    //=================== LOGICAL NODES =====================
+
+    private AttributePanel andHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == VariableType.Boolean && rightAttr.variableType == VariableType.Boolean) {
+            generateCode("BOP", "BAND", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Boolean);
+        } else {
+            errors.add("AND non-bool values cannot be and");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel orHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel leftAttr = Evaluate(n.getChild(0), parentAttr, env);
+        AttributePanel rightAttr = Evaluate(n.getChild(1), leftAttr, env);
+        if (leftAttr.variableType == VariableType.Boolean && rightAttr.variableType == VariableType.Boolean) {
+            generateCode("BOP", "BOR", env);
+            return new AttributePanel(rightAttr.stackSize - 1, VariableType.Boolean);
+        } else {
+            errors.add("MINUS non-bool values cannot be or");
+            return new AttributePanel(rightAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+
+    //=================== SINGLE OPERATION NODES =====================
+
+    private AttributePanel negHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel childAttr = Evaluate(n.getChild(0), parentAttr, env);
+        if (childAttr.variableType == VariableType.Integer) {
+            generateCode("UOP", "UNOT", env);
+            return new AttributePanel(childAttr.stackSize, VariableType.Integer);
+        } else {
+            errors.add("NEG non-integer values cannot be negated");
+            return new AttributePanel(childAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel succHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel childAttr = Evaluate(n.getChild(0), parentAttr, env);
+        if (childAttr.variableType == VariableType.Integer) {
+            generateCode("UOP", "USUCC", env);
+            return new AttributePanel(childAttr.stackSize, VariableType.Integer);
+        } else {
+            errors.add("SUCC non-integer values cannot be succeeded");
+            return new AttributePanel(childAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel predHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel childAttr = Evaluate(n.getChild(0), parentAttr, env);
+        if (childAttr.variableType == VariableType.Integer) {
+            generateCode("UOP", "UPRED", env);
+            return new AttributePanel(childAttr.stackSize, VariableType.Integer);
+        } else {
+            errors.add("PRED non-integer values cannot be preceded");
+            return new AttributePanel(childAttr.stackSize, VariableType.Undecided);
+        }
+    }
+
+    private AttributePanel notHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel childAttr = Evaluate(n.getChild(0), parentAttr, env);
+        if (childAttr.variableType == VariableType.Boolean) {
+            generateCode("UOP", "UNOT", env);
+            return new AttributePanel(childAttr.stackSize, VariableType.Boolean);
+        } else {
+            errors.add("NOT non-boolean values cannot be complimented");
+            return new AttributePanel(childAttr.stackSize, VariableType.Undecided);
         }
     }
 
