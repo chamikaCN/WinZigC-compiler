@@ -218,21 +218,16 @@ public class CodeGenerator {
                 return readHandler(node, attr, currentEnvironment);
             case "block":
                 return blockHandler(node, attr, currentEnvironment);
-//            case "subprogs":
-//                return subprogsHandler(node, attr, currentEnvironment);
-//            case "dclns":
-//                return dclnsHandler(node, attr, currentEnvironment);
-//            case "types":
-//                return typesHandler(node, attr, currentEnvironment);
-//            case "consts":
-//                return constsHandler(node, attr, currentEnvironment);
-//            case "program":
-////                return programHandler(node, attr, currentEnvironment);
-//                AttributePanel attributePanel = attr;
-//                for (int i = 1; i < node.childrenCount-1; i++) {
-//                    attributePanel = Evaluate(node.getChild(i),attributePanel,currentEnvironment);
-//                }
-//                return attributePanel;
+            case "subprogs":
+                return subprogsHandler(node, attr, currentEnvironment);
+            case "dclns":
+                return dclnsHandler(node, attr, currentEnvironment);
+            case "types":
+                return typesHandler(node, attr, currentEnvironment);
+            case "consts":
+                return constsHandler(node, attr, currentEnvironment);
+            case "program":
+                return programHandler(node, attr, currentEnvironment);
             default:
                 return defaultHandler(node, attr, currentEnvironment);
 
@@ -252,24 +247,33 @@ public class CodeGenerator {
 
     //=================== FUNCTIONAL NODES =======================
 
-    private AttributePanel subprogsHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return null;
+    private AttributePanel programHandler(Node n, AttributePanel parentAttr, Environment env) {
+        AttributePanel attr = parentAttr;
+        if(n.getChild(0).getChild(0).name.equals(n.getChild(n.childrenCount - 1).getChild(0).name)) {
+            for (int i = 1; i < n.childrenCount - 1; i++) {
+                attr = Evaluate(n.getChild(i), attr, env);
+            }
+        }else{
+            errors.add("PROGRAM starting and ending names does not match");
+        }
+        generateCode("HALT",env);
+        return attr;
     }
 
     private AttributePanel dclnsHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return null;
+        return defaultHandler(n,parentAttr,env);
+    }
+
+    private AttributePanel subprogsHandler(Node n, AttributePanel parentAttr, Environment env) {
+        return new AttributePanel(parentAttr.stackSize, parentAttr.variableType);
     }
 
     private AttributePanel typesHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return null;
+        return new AttributePanel(parentAttr.stackSize, parentAttr.variableType);
     }
 
     private AttributePanel constsHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return null;
-    }
-
-    private AttributePanel programHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return null;
+        return new AttributePanel(parentAttr.stackSize, parentAttr.variableType);
     }
 
 
@@ -351,8 +355,6 @@ public class CodeGenerator {
     }
 
     private AttributePanel whileHandler(Node n, AttributePanel parentAttr, Environment env) {
-//        int returningEnvNum = environmentCounter;
-//        environmentCounter++;
         Environment expEnv = createConditionalEnvironment(parentAttr.stackSize, env != null ? env.functionParent : null);
         AttributePanel expAttr = Evaluate(n.getChild(0), parentAttr, expEnv);
         Environment doEnv = createConditionalEnvironment(expAttr.stackSize, env != null ? env.functionParent : null);
@@ -360,10 +362,8 @@ public class CodeGenerator {
         generateCode("COND\t" + doEnv.envName + "\t" + elseEnv.envName, expEnv);
         AttributePanel doAttr = Evaluate(n.getChild(1), expAttr, doEnv);
         generateCode("GOTO", expEnv.envName, doEnv);
-//        updateEnvironmentName(env, returningEnvNum);
         generateCode("NOP", elseEnv);
         AttributePanel elseAttr = new AttributePanel(doAttr.stackSize, doAttr.variableType);
-//        generateCode("NOP", env);
         return elseAttr;
     }
 
