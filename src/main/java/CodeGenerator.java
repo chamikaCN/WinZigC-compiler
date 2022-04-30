@@ -186,6 +186,8 @@ public class CodeGenerator {
                 return andHandler(node, attr, currentEnvironment);
             case "or":
                 return orHandler(node, attr, currentEnvironment);
+            case "not":
+                return notHandler(node, attr, currentEnvironment);
             case "succ":
                 return succHandler(node, attr, currentEnvironment);
             case "pred":
@@ -249,19 +251,19 @@ public class CodeGenerator {
 
     private AttributePanel programHandler(Node n, AttributePanel parentAttr, Environment env) {
         AttributePanel attr = parentAttr;
-        if(n.getChild(0).getChild(0).name.equals(n.getChild(n.childrenCount - 1).getChild(0).name)) {
+        if (n.getChild(0).getChild(0).name.equals(n.getChild(n.childrenCount - 1).getChild(0).name)) {
             for (int i = 1; i < n.childrenCount - 1; i++) {
                 attr = Evaluate(n.getChild(i), attr, env);
             }
-        }else{
+        } else {
             errors.add("PROGRAM starting and ending names does not match");
         }
-        generateCode("HALT",env);
+        generateCode("HALT", env);
         return attr;
     }
 
     private AttributePanel dclnsHandler(Node n, AttributePanel parentAttr, Environment env) {
-        return defaultHandler(n,parentAttr,env);
+        return defaultHandler(n, parentAttr, env);
     }
 
     private AttributePanel subprogsHandler(Node n, AttributePanel parentAttr, Environment env) {
